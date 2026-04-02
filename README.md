@@ -11,7 +11,6 @@ Desarrollada con React, TypeScript y Vite, esta aplicación permite a los jugado
 - **Cálculo Automático (Scorer):** Calcula automáticamente los puntos basados en las reglas de Skull King.
 - **Tabla de Clasificación (Leaderboard):** Visualiza quién va ganando en tiempo real.
 - **Sincronización en la Nube:** Firebase Firestore mantiene sincronizados los dispositivos de todos los jugadores sin necesidad de recargar.
-- **Integración con IA:** Utiliza Google Gemini para funciones inteligentes dentro de la app.
 - **Diseño Responsivo:** Creado con TailwindCSS para verse perfecto tanto en móviles como en PC.
 
 ## 🛠️ Tecnologías Utilizadas
