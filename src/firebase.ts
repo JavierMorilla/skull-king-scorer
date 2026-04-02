@@ -3,12 +3,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_9LiAjzdVTcIc3Jewa7WkjL7XApcuFl4",
-  authDomain: "skull-king-60738.firebaseapp.com",
-  projectId: "skull-king-60738",
-  storageBucket: "skull-king-60738.firebasestorage.app",
-  messagingSenderId: "719303534513",
-  appId: "1:719303534513:web:a15ee8e3a68b0370583f90"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
