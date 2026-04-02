@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Room": {
+      "title": "Room",
+      "description": "A game room session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hostId": { "type": "string" },
+        "status": { "type": "string", "enum": ["LOBBY", "BETTING", "RESULTS", "LEADERBOARD"] },
+        "currentRound": { "type": "number" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["id", "hostId", "status", "currentRound", "createdAt"]
+    },
+    "Player": {
+      "title": "Player",
+      "description": "A player in a room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "score": { "type": "number" },
+        "isReady": { "type": "boolean" },
+        "isHost": { "type": "boolean" }
+      },
+      "required": ["id", "name", "avatar", "score", "isReady", "isHost"]
+    },
+    "Round": {
+      "title": "Round",
+      "description": "A round within a room",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "status": { "type": "string", "enum": ["BETTING", "RESULTS", "COMPLETED"] }
+      },
+      "required": ["id", "status"]
+    },
+    "Bid": {
+      "title": "Bid",
+      "description": "A player's bid for a round",
+      "type": "object",
+      "properties": {
+        "playerId": { "type": "string" },
+        "bid": { "type": "number" }
+      },
+      "required": ["playerId", "bid"]
+    },
+    "Result": {
+      "title": "Result",
+      "description": "A player's result for a round",
+      "type": "object",
+      "properties": {
+        "playerId": { "type": "string" },
+        "tricks": { "type": "number" },
+        "bonusMermaids": { "type": "number" },
+        "bonusPirates": { "type": "number" },
+        "bonusSkullKing": { "type": "number" },
+        "scoreChange": { "type": "number" }
+      },
+      "required": ["playerId", "tricks", "bonusMermaids", "bonusPirates", "bonusSkullKing", "scoreChange"]
+    }
+  },
+  "firestore": {
+    "/rooms/{roomId}": {
+      "schema": { "$ref": "#/entities/Room" },
+      "description": "Stores all game rooms"
+    },
+    "/rooms/{roomId}/players/{playerId}": {
+      "schema": { "$ref": "#/entities/Player" },
+      "description": "Stores players in a room"
+    },
+    "/rooms/{roomId}/rounds/{roundId}": {
+      "schema": { "$ref": "#/entities/Round" },
+      "description": "Stores round states"
+    },
+    "/rooms/{roomId}/rounds/{roundId}/bids/{playerId}": {
+      "schema": { "$ref": "#/entities/Bid" },
+      "description": "Stores player bids for a round"
+    },
+    "/rooms/{roomId}/rounds/{roundId}/results/{playerId}": {
+      "schema": { "$ref": "#/entities/Result" },
+      "description": "Stores player results for a round"
+    }
+  }
+}

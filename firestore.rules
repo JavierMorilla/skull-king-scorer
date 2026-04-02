@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isRoomHost(roomId) {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/rooms/$(roomId)) &&
+             get(/databases/$(database)/documents/rooms/$(roomId)).data.hostId == request.auth.uid;
+    }
+
+    match /rooms/{roomId} {
+      allow read: if isAuthenticated();
+      
+      // Any authenticated user can create a room
+      allow create: if isAuthenticated() &&
+                    request.resource.data.hostId == request.auth.uid;
+
+      // Only the host can update the room
+      allow update: if isAuthenticated() &&
+                    resource.data.hostId == request.auth.uid;
+
+      match /players/{playerId} {
+        allow read: if isAuthenticated();
+        
+        // Players can join (create their own profile)
+        allow create: if isOwner(playerId) &&
+                      request.resource.data.id == request.auth.uid;
+
+        // Players can update their ready status, Host can update scores
+        allow update: if isAuthenticated() &&
+                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['id', 'isHost', 'name', 'avatar']) &&
+                      (
+                        (isOwner(playerId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isReady'])) ||
+                        (isRoomHost(roomId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['score', 'isReady']))
+                      );
+                      
+        // Players can leave the room
+        allow delete: if isOwner(playerId) || isRoomHost(roomId);
+      }
+
+      match /rounds/{roundId} {
+        allow read: if isAuthenticated();
+        
+        // Only the host can manage rounds
+        allow create: if isRoomHost(roomId);
+                      
+        allow update: if isRoomHost(roomId);
+
+        match /bids/{playerId} {
+          allow read: if isAuthenticated();
+          
+          // Players submit their own bids
+          allow create: if isOwner(playerId) &&
+                        request.resource.data.keys().hasAll(['playerId', 'bid', 'extraBet']) &&
+                        request.resource.data.playerId == request.auth.uid &&
+                        request.resource.data.bid >= 0 && request.resource.data.bid <= 10;
+                        
+          // Anyone can toggle the highlight, but only owner can change the bid
+          allow update: if isAuthenticated() &&
+                        (
+                          (isOwner(playerId) && request.resource.data.diff(resource.data).affectedKeys().hasAny(['bid', 'extraBet'])) ||
+                          (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['bid', 'extraBet', 'playerId']))
+                        );
+        }
+
+        match /results/{playerId} {
+          allow read: if isAuthenticated();
+          
+          // Players submit their own results
+          allow create: if isOwner(playerId) &&
+                        request.resource.data.keys().hasAll(['playerId', 'tricks', 'scoreChange']) &&
+                        request.resource.data.playerId == request.auth.uid;
+                        
+          // Players can update their results, Host can update the scoreChange
+          allow update: if isAuthenticated() &&
+                        (
+                          (isOwner(playerId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['playerId'])) ||
+                          (isRoomHost(roomId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scoreChange']))
+                        );
+          
+          allow delete: if isOwner(playerId) || isRoomHost(roomId);
+        }
+      }
+    }
+  }
+}
