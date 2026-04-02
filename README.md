@@ -2,7 +2,7 @@
 
 Una aplicación web moderna y en tiempo real diseñada para llevar las puntuaciones y gestionar las partidas del popular juego de cartas **Skull King**.
 
-Desarrollada con React, TypeScript y Vite, esta aplicación permite a los jugadores crear salas, unirse a partidas, registrar sus apuestas y calcular automáticamente las puntuaciones, todo sincronizado en tiempo real gracias a Firebase. Además, cuenta con integración de Inteligencia Artificial mediante la API de Google Gemini.
+Desarrollada con React, TypeScript y Vite, esta aplicación permite a los jugadores crear salas, unirse a partidas, registrar sus apuestas y calcular automáticamente las puntuaciones, todo sincronizado en tiempo real gracias a Firebase.
 
 ## ✨ Características Principales
 
@@ -11,7 +11,6 @@ Desarrollada con React, TypeScript y Vite, esta aplicación permite a los jugado
 - **Cálculo Automático (Scorer):** Calcula automáticamente los puntos basados en las reglas de Skull King.
 - **Tabla de Clasificación (Leaderboard):** Visualiza quién va ganando en tiempo real.
 - **Sincronización en la Nube:** Firebase Firestore mantiene sincronizados los dispositivos de todos los jugadores sin necesidad de recargar.
-- **Integración con IA:** Utiliza Google Gemini para funciones inteligentes dentro de la app.
 - **Diseño Responsivo:** Creado con TailwindCSS para verse perfecto tanto en móviles como en PC.
 
 ## 🛠️ Tecnologías Utilizadas
@@ -37,18 +36,6 @@ cd skull-king-scorer
 ```bash
 npm install
 ```
-
-### 3. Variables de Entorno
-Para que las funciones de Inteligencia Artificial operen correctamente, necesitas configurar tu clave de Gemini.
-1. Crea un archivo llamado `.env.local` en la raíz del proyecto.
-2. Copia el siguiente contenido y pega tu clave real:
-
-```env
-GEMINI_API_KEY="tu_clave_real_de_google_gemini"
-APP_URL="http://localhost:3000"
-```
-
-*(Puedes obtener una clave de API gratuita en [Google AI Studio](https://aistudio.google.com/)).*
 
 ### 4. Iniciar el servidor de desarrollo
 ```bash
