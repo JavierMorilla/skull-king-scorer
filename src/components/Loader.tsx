@@ -9,9 +9,7 @@ export default function Loader() {
         {/* Inner spinning ring */}
         <div className="absolute inset-2 border-4 border-[#fabd04] rounded-full border-t-transparent animate-spin"></div>
         {/* Center icon */}
-        <span className="material-symbols-outlined text-[#fabd04] text-3xl animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>
-          skull
-        </span>
+        <span className="material-symbols-outlined text-[#fabd04] text-3xl animate-pulse">skull</span>
       </div>
     </div>
   );

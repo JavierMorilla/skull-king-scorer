@@ -93,7 +93,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
       <div className="relative w-full max-w-md flex flex-col items-center gap-12 text-center z-10">
         <section className="flex flex-col items-center">
           <div className="w-24 h-24 mb-6 bg-[#1b2b3b] rounded-full flex items-center justify-center shadow-xl shadow-black/40 border-2 border-[#fabd04]/20">
-            <span className="material-symbols-outlined text-6xl text-[#fabd04]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+            <span className="material-symbols-outlined text-[#fabd04] text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#d3e4fa] tracking-tight leading-none mb-2">
             Skull King <span className="block italic text-[#fabd04]">Tracker</span>
@@ -104,7 +104,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
         <section className="w-full space-y-8">
           {errorMsg && (
             <div className="bg-[#ffb3ae]/10 border border-[#ffb3ae]/30 rounded-xl p-4 flex items-start gap-3 text-left animate-in fade-in slide-in-from-top-2">
-              <span className="material-symbols-outlined text-[#ffb3ae] mt-0.5">warning</span>
+              <span className="material-symbols-outlined text-[#ffb3ae] text-xl shrink-0 mt-0.5">warning</span>
               <p className="font-sans text-sm text-[#ffb3ae] leading-tight">{errorMsg}</p>
             </div>
           )}
@@ -121,7 +121,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 className="w-full bg-[#f0bd8b] border-none h-16 px-6 rounded-xl font-serif text-2xl text-[#261a00] placeholder:text-[#261a00]/40 focus:ring-4 focus:ring-[#fabd04]/20 transition-all"
                 style={{ backgroundImage: 'radial-gradient(#d4a373 0.5px, transparent 0.5px)', backgroundSize: '10px 10px', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)' }}
               />
-              <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#261a00]/30">edit</span>
+              <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#261a00]/30 text-2xl">edit</span>
             </div>
           </div>
 
@@ -137,9 +137,11 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                   <span className="material-symbols-outlined text-[#fabd04] text-xl">settings_suggest</span>
                   <p className="font-mono text-sm uppercase tracking-widest text-[#f0bd8b]/80 group-hover:text-[#f0bd8b] transition-colors">Reglas de la Flota</p>
                 </div>
-                <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors">
-                  {showSettings ? 'expand_less' : 'expand_more'}
-                </span>
+                {showSettings ? (
+                  <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors text-xl">expand_less</span>
+                ) : (
+                  <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors text-xl">expand_more</span>
+                )}
               </button>
               
               <AnimatePresence>
@@ -158,7 +160,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                         { id: 'characterBonusesEnabled', title: 'Capturas', desc: 'Puntos por Sirena, Pirata y Rey', icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
                         { id: 'fourteenBonusesEnabled', title: 'Cartas 14', desc: 'Bonus por ganar con cartas 14', icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
                         { id: 'extraBetEnabled', title: 'Apuesta Extra', desc: 'Arriesga ±10 o ±20 puntos (Rascal)', icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
-                        { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'paid', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+                        { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
                       ].map((option) => {
                         const isEnabled = settings[option.id as keyof typeof settings];
                         return (
@@ -173,9 +175,9 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                           >
                             <div className="flex justify-between items-start">
                               <div className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${isEnabled ? `${option.bg} ${option.color}` : 'bg-[#1b2b3b] text-[#c4c6cc]'}`}>
-                                {option.iconType === 'material' && <span className="material-symbols-outlined text-xl">{option.icon}</span>}
-                                {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon}</span>}
-                                {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon}</span>}
+                                {option.iconType === 'material' && <span className="material-symbols-outlined text-xl">{option.icon as string}</span>}
+                                {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon as string}</span>}
+                                {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon as string}</span>}
                               </div>
                               <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-[#102130] border border-[#44474c]'}`}>
                                 <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
@@ -203,7 +205,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 <div className="w-6 h-6 border-4 border-[#261a00]/30 border-t-[#261a00] rounded-full animate-spin"></div>
               ) : (
                 <>
-                  <span className="material-symbols-outlined">meeting_room</span>
+                  <span className="material-symbols-outlined text-3xl">meeting_room</span>
                   Crear Sala
                 </>
               )}

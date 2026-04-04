@@ -79,7 +79,7 @@ export default function Lobby({ room, players }: LobbyProps) {
     >
       <section className="mb-10 text-center relative">
         <div className="absolute inset-0 -z-10 opacity-10 flex justify-center items-center overflow-hidden">
-          <span className="material-symbols-outlined text-[12rem]">skull</span>
+          <span className="material-symbols-outlined text-[#d3e4fa] text-[12rem]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
         </div>
         <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#d3e4fa] mb-2">Reúne a tu Tripulación</h2>
         <p className="text-[#f0bd8b] opacity-80 font-sans text-lg italic">Esperando a que cambie la marea...</p>
@@ -95,7 +95,7 @@ export default function Lobby({ room, players }: LobbyProps) {
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-serif font-bold text-xl text-[#d3e4fa]">{player.name}</p>
-                  {player.isHost && <span className="material-symbols-outlined text-[#fabd04] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>}
+                  {player.isHost && <span className="material-symbols-outlined text-[#fabd04] text-base" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>}
                 </div>
                 <p className="font-mono text-xs text-[#f0bd8b]/60 uppercase tracking-tighter">
                   {player.isHost ? 'Capitán & Host' : 'Marinero'}
@@ -106,12 +106,12 @@ export default function Lobby({ room, players }: LobbyProps) {
             <div className="flex items-center gap-3">
               {player.isReady ? (
                 <div className="flex items-center gap-2 bg-[#fabd04]/10 px-3 py-1.5 rounded-full border border-[#fabd04]/20">
-                  <span className="material-symbols-outlined text-[#fabd04] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  <span className="material-symbols-outlined text-[#fabd04] text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-mono text-xs font-bold text-[#fabd04]">LISTO</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 bg-[#263647] px-3 py-1.5 rounded-full border border-[#44474c]/30">
-                  <span className="material-symbols-outlined text-[#c4c6cc] text-sm">hourglass_empty</span>
+                  <span className="material-symbols-outlined text-[#c4c6cc] text-base">hourglass_empty</span>
                   <span className="font-mono text-xs font-bold text-[#c4c6cc]">ESPERANDO</span>
                 </div>
               )}
@@ -139,7 +139,7 @@ export default function Lobby({ room, players }: LobbyProps) {
 
       <div className="mt-8">
         <h3 className="font-serif text-2xl font-bold text-[#d3e4fa] mb-4 flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#fabd04]">settings_suggest</span>
+          <span className="material-symbols-outlined text-[#fabd04] text-2xl">settings_suggest</span>
           Reglas de la Flota
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -149,9 +149,9 @@ export default function Lobby({ room, players }: LobbyProps) {
             { id: 'characterBonusesEnabled', title: 'Capturas', desc: 'Puntos por Sirena, Pirata y Rey', icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
             { id: 'fourteenBonusesEnabled', title: 'Cartas 14', desc: 'Bonus por ganar con cartas 14', icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
             { id: 'extraBetEnabled', title: 'Apuesta Extra', desc: 'Arriesga ±10 o ±20 puntos (Rascal)', icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
-            { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'paid', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+            { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
           ].map((option) => {
-            const isEnabled = room.settings?.[option.id] || false;
+            const isEnabled = room.settings?.[option.id as keyof typeof room.settings] || false;
             return (
               <div
                 key={option.id}
@@ -164,9 +164,9 @@ export default function Lobby({ room, players }: LobbyProps) {
               >
                 <div className="flex justify-between items-start">
                   <div className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${isEnabled ? `${option.bg} ${option.color}` : 'bg-[#1b2b3b] text-[#c4c6cc]'}`}>
-                    {option.iconType === 'material' && <span className="material-symbols-outlined text-xl">{option.icon}</span>}
-                    {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon}</span>}
-                    {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon}</span>}
+                    {option.iconType === 'material' && <span className="material-symbols-outlined text-xl">{option.icon as string}</span>}
+                    {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon as string}</span>}
+                    {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon as string}</span>}
                   </div>
                   <Switch 
                     checked={isEnabled} 
@@ -192,9 +192,7 @@ export default function Lobby({ room, players }: LobbyProps) {
               onClick={handleToggleReady}
               className={`w-full py-4 rounded-xl font-serif font-bold text-lg shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3 ${currentPlayer?.isReady ? 'bg-[#263647] text-[#d3e4fa]' : 'bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00]'}`}
             >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                {currentPlayer?.isReady ? 'close' : 'check'}
-              </span>
+              <span className="material-symbols-outlined text-2xl">{currentPlayer?.isReady ? 'close' : 'check'}</span>
               {currentPlayer?.isReady ? 'Cancelar' : 'Estoy Listo'}
             </button>
           ) : (
@@ -203,7 +201,7 @@ export default function Lobby({ room, players }: LobbyProps) {
               disabled={!allReady}
               className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] py-4 rounded-xl font-serif font-bold text-lg shadow-xl shadow-[#fabd04]/10 active:scale-95 transition-transform flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
               Empezar Partida
             </button>
           )}

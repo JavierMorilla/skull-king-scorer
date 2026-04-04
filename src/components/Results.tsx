@@ -112,11 +112,11 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
       >
         {room.roundError && (
           <div className="bg-red-900/50 border border-red-500/50 text-red-200 p-4 rounded-xl mb-6 w-full max-w-xs mx-auto">
-            <span className="material-symbols-outlined text-red-400 mb-2 block text-3xl">warning</span>
+            <span className="material-symbols-outlined text-red-400 mb-2 block mx-auto text-3xl">warning</span>
             <p className="font-sans text-sm">{room.roundError}</p>
           </div>
         )}
-        <span className="material-symbols-outlined text-6xl text-[#fabd04] mb-4 animate-pulse">explore</span>
+        <span className="material-symbols-outlined text-[#fabd04] text-6xl mb-4 animate-pulse">explore</span>
         <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Botín Registrado</h2>
         <p className="text-[#f0bd8b]/80 font-sans">Esperando a que el resto de la tripulación cuente su botín...</p>
         <div className="mt-8 space-y-2">
@@ -126,9 +126,9 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
               <div key={p.id} className="flex items-center justify-between bg-[#1b2b3b] p-3 rounded-lg w-full max-w-xs mx-auto">
                 <span className="font-sans text-[#d3e4fa]">{p.name}</span>
                 {playerResult ? (
-                  <span className="material-symbols-outlined text-[#fabd04]">check_circle</span>
+                  <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                 ) : (
-                  <span className="material-symbols-outlined text-[#44474c]">pending</span>
+                  <span className="material-symbols-outlined text-[#44474c] text-xl">pending</span>
                 )}
               </div>
             );
@@ -139,7 +139,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
           disabled={loading}
           className="mt-8 bg-[#1b2b3b] text-[#fabd04] py-3 px-6 rounded-xl border border-[#fabd04]/30 shadow-lg hover:bg-[#263647] transition-colors flex items-center gap-2 mx-auto active:scale-95 disabled:opacity-50"
         >
-          <span className="material-symbols-outlined text-sm">edit</span>
+          <span className="material-symbols-outlined text-base">edit</span>
           <span className="font-mono uppercase tracking-wider text-sm">Editar Botín</span>
         </button>
       </motion.div>
@@ -157,7 +157,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
       <div className="mb-10 relative flex justify-between items-start">
         <div>
           <div className="absolute -left-4 -top-4 opacity-10 pointer-events-none">
-            <span className="material-symbols-outlined text-9xl" style={{ fontSize: '160px' }}>menu_book</span>
+            <span className="material-symbols-outlined text-[10rem]">menu_book</span>
           </div>
           <h2 className="font-serif text-4xl font-bold text-[#f0bd8b] mb-1 ml-4 relative z-10">Ronda {room.currentRound}</h2>
           <p className="font-mono text-sm uppercase tracking-[0.2em] text-[#c4c6cc] ml-4 relative z-10">Entrada del Cuaderno de Bitácora</p>
@@ -167,7 +167,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
           className="bg-[#1b2b3b] text-[#fabd04] p-3 rounded-xl border border-[#fabd04]/30 shadow-lg hover:bg-[#263647] transition-colors flex items-center gap-2 z-10 active:scale-95"
           title="Ver Apuestas"
         >
-          <span className="material-symbols-outlined">visibility</span>
+          <span className="material-symbols-outlined text-2xl">visibility</span>
         </button>
       </div>
 
@@ -285,7 +285,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                   <label className="flex items-center justify-between cursor-pointer group">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-[#263647] flex items-center justify-center text-[#ffb3ae]">
-                        <span className="material-symbols-outlined">waves</span>
+                        <span className="material-symbols-outlined text-xl">waves</span>
                       </div>
                       <div className="text-left">
                         <span className="font-sans font-bold text-[#d3e4fa] block">Sirena captura Rey</span>
@@ -302,7 +302,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-[#362600] flex items-center justify-center text-[#fabd04]">
-                        <span className="material-symbols-outlined">crown</span>
+                        <span className="material-symbols-outlined text-xl">crown</span>
                       </div>
                       <div className="text-left">
                         <span className="font-sans font-bold text-[#d3e4fa] block">Rey captura Piratas</span>
@@ -310,16 +310,16 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => setBonusPiratesCaptured(Math.max(0, bonusPiratesCaptured - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">remove</span></button>
+                      <button onClick={() => setBonusPiratesCaptured(Math.max(0, bonusPiratesCaptured - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">remove</span></button>
                       <span className="font-mono text-lg font-bold text-white w-4 text-center">{bonusPiratesCaptured}</span>
-                      <button onClick={() => setBonusPiratesCaptured(Math.min(5, bonusPiratesCaptured + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">add</span></button>
+                      <button onClick={() => setBonusPiratesCaptured(Math.min(5, bonusPiratesCaptured + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">add</span></button>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-[#263647] flex items-center justify-center text-[#f0bd8b]">
-                        <span className="material-symbols-outlined">skull</span>
+                        <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
                       </div>
                       <div className="text-left">
                         <span className="font-sans font-bold text-[#d3e4fa] block">Pirata captura Sirena</span>
@@ -327,9 +327,9 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => setBonusMermaidsCaptured(Math.max(0, bonusMermaidsCaptured - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">remove</span></button>
+                      <button onClick={() => setBonusMermaidsCaptured(Math.max(0, bonusMermaidsCaptured - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">remove</span></button>
                       <span className="font-mono text-lg font-bold text-white w-4 text-center">{bonusMermaidsCaptured}</span>
-                      <button onClick={() => setBonusMermaidsCaptured(Math.min(2, bonusMermaidsCaptured + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">add</span></button>
+                      <button onClick={() => setBonusMermaidsCaptured(Math.min(2, bonusMermaidsCaptured + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">add</span></button>
                     </div>
                   </div>
                 </div>
@@ -343,7 +343,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#263647] flex items-center justify-center text-[#f0bd8b]">
-                      <span className="material-symbols-outlined">diamond</span>
+                      <span className="material-symbols-outlined text-xl">diamond</span>
                     </div>
                     <div className="text-left">
                       <span className="font-sans font-bold text-[#d3e4fa] block">14 de Color</span>
@@ -351,16 +351,16 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setBonus14sColor(Math.max(0, bonus14sColor - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">remove</span></button>
+                    <button onClick={() => setBonus14sColor(Math.max(0, bonus14sColor - 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">remove</span></button>
                     <span className="font-mono text-lg font-bold text-white w-4 text-center">{bonus14sColor}</span>
-                    <button onClick={() => setBonus14sColor(Math.min(3, bonus14sColor + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-sm">add</span></button>
+                    <button onClick={() => setBonus14sColor(Math.min(3, bonus14sColor + 1))} className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04]"><span className="material-symbols-outlined text-base">add</span></button>
                   </div>
                 </div>
 
                 <label className="flex items-center justify-between cursor-pointer group">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#102130] flex items-center justify-center text-[#c4c6cc] border border-[#c4c6cc]/30">
-                      <span className="material-symbols-outlined">flag</span>
+                      <span className="material-symbols-outlined text-xl">flag</span>
                     </div>
                     <div className="text-left">
                       <span className="font-sans font-bold text-[#d3e4fa] block">14 Negro (Pirata)</span>
@@ -392,7 +392,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
       </button>
 
       <div className="fixed top-1/2 -right-20 -translate-y-1/2 rotate-12 opacity-5 pointer-events-none">
-        <span className="material-symbols-outlined" style={{ fontSize: '400px' }}>explore</span>
+        <span className="material-symbols-outlined text-[24rem]">explore</span>
       </div>
 
       <AnimatePresence>
@@ -413,11 +413,11 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                 onClick={() => setShowBidsModal(false)}
                 className="absolute top-4 right-4 text-[#c4c6cc] hover:text-[#fabd04] transition-colors"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined text-2xl">close</span>
               </button>
               
               <h3 className="font-serif text-2xl font-bold text-[#d3e4fa] mb-6 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#fabd04]">visibility</span>
+                <span className="material-symbols-outlined text-[#fabd04] text-2xl">visibility</span>
                 Apuestas de la Ronda
               </h3>
               

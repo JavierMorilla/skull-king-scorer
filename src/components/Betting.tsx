@@ -72,27 +72,27 @@ export default function Betting({ room, players, bids }: BettingProps) {
           transition={{ duration: 0.4 }}
           className="flex-grow pt-24 pb-32 px-6 max-w-lg mx-auto w-full flex flex-col items-center justify-center text-center"
         >
-          <motion.span 
+          <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="material-symbols-outlined text-6xl text-[#fabd04] mb-4"
+            className="mb-4"
           >
-            visibility
-          </motion.span>
+            <span className="material-symbols-outlined text-[#fabd04] text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
+          </motion.div>
           <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Apuestas Reveladas</h2>
           <p className="text-[#f0bd8b]/80 font-sans mb-6">¡Todos han apostado! Esta es la predicción de la tripulación:</p>
           
           {dealer && startingPlayer && (
             <div className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#f0bd8b]/80 text-lg">style</span>
+                <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
                 <span className="font-sans text-[#d3e4fa] text-sm">
                   Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
                 </span>
               </div>
               <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#fabd04] text-lg">play_circle</span>
+                <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
                 <span className="font-sans text-[#d3e4fa] text-sm">
                   Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
                 </span>
@@ -147,27 +147,27 @@ export default function Betting({ room, players, bids }: BettingProps) {
         transition={{ duration: 0.4 }}
         className="flex-grow pt-24 pb-32 px-6 max-w-lg mx-auto w-full flex flex-col items-center justify-center text-center"
       >
-        <motion.span 
+        <motion.div 
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="material-symbols-outlined text-6xl text-[#fabd04] mb-4"
+          className="mb-4"
         >
-          hourglass_empty
-        </motion.span>
+          <span className="material-symbols-outlined text-[#fabd04] text-6xl">hourglass_empty</span>
+        </motion.div>
         <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Apuesta Registrada</h2>
         <p className="text-[#f0bd8b]/80 font-sans mb-6">Esperando a que el resto de la tripulación apueste...</p>
 
         {dealer && startingPlayer && (
           <div className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#f0bd8b]/80 text-lg">style</span>
+              <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
               <span className="font-sans text-[#d3e4fa] text-sm">
                 Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
               </span>
             </div>
             <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#fabd04] text-lg">play_circle</span>
+              <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
               <span className="font-sans text-[#d3e4fa] text-sm">
                 Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
               </span>
@@ -182,9 +182,9 @@ export default function Betting({ room, players, bids }: BettingProps) {
               <div key={p.id} className="flex items-center justify-between bg-[#1b2b3b] p-3 rounded-lg w-full max-w-xs mx-auto">
                 <span className="font-sans text-[#d3e4fa]">{p.name}</span>
                 {playerBid ? (
-                  <span className="material-symbols-outlined text-[#fabd04]">check_circle</span>
+                  <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                 ) : (
-                  <span className="material-symbols-outlined text-[#44474c]">pending</span>
+                  <span className="material-symbols-outlined text-[#44474c] text-xl">pending</span>
                 )}
               </div>
             );
@@ -211,14 +211,14 @@ export default function Betting({ room, players, bids }: BettingProps) {
       {dealer && startingPlayer && (
         <div className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#f0bd8b]/80 text-lg">style</span>
+            <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
             <span className="font-sans text-[#d3e4fa] text-sm">
               Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
             </span>
           </div>
           <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#fabd04] text-lg">play_circle</span>
+            <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
             <span className="font-sans text-[#d3e4fa] text-sm">
               Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
             </span>
@@ -228,7 +228,7 @@ export default function Betting({ room, players, bids }: BettingProps) {
 
       <section className="mb-10 text-center relative">
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-5 pointer-events-none select-none">
-          <span className="material-symbols-outlined text-[160px]">skull</span>
+          <span className="material-symbols-outlined text-[10rem]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
         </div>
         <p className="font-serif italic text-[#f0bd8b] text-lg mb-1">Fase: Apuestas</p>
         <h2 className="font-serif font-bold text-4xl text-[#d3e4fa] tracking-tight">Ronda {room.currentRound}/10</h2>
@@ -237,7 +237,7 @@ export default function Betting({ room, players, bids }: BettingProps) {
 
       <div className="bg-[#1b2b3b] rounded-xl p-6 mb-8 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 p-4 opacity-10">
-          <span className="material-symbols-outlined text-4xl">person</span>
+          <span className="material-symbols-outlined text-5xl">person</span>
         </div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#c4c6cc] mb-2">Jugador Actual</p>
         <h3 className="font-serif text-2xl font-bold text-[#fabd04] italic">{currentPlayer?.name}</h3>
@@ -309,7 +309,7 @@ export default function Betting({ room, players, bids }: BettingProps) {
           className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] py-5 rounded-xl flex items-center justify-center gap-3 active:scale-[0.96] transition-transform shadow-xl disabled:opacity-50"
         >
           <span className="font-mono text-[#261a00] font-bold text-lg uppercase tracking-widest">Confirmar Apuesta</span>
-          <span className="material-symbols-outlined text-[#261a00]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+          <span className="material-symbols-outlined text-[#261a00] text-2xl">check_circle</span>
         </button>
       </div>
 

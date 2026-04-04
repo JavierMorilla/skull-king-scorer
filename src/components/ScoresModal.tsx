@@ -48,7 +48,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
                 onClick={onClose}
                 className="text-[#f0bd8b]/60 hover:text-[#f0bd8b] transition-colors"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined text-2xl">close</span>
               </button>
             </div>
 
@@ -66,7 +66,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
                       <div className="font-sans text-[#d3e4fa] font-medium flex items-center gap-2">
                         {player.name}
                         {player.id === room.hostId && (
-                          <span className="material-symbols-outlined text-[14px] text-[#fabd04]" title="Capitán">sailing</span>
+                          <span className="material-symbols-outlined text-[#fabd04] text-base" title="Capitán">sailing</span>
                         )}
                       </div>
                       <div className="text-xs text-[#f0bd8b]/60 font-mono">
@@ -85,7 +85,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
                         className="text-red-500/70 hover:text-red-400 transition-colors p-1 rounded-lg hover:bg-red-500/10"
                         title="Expulsar jugador"
                       >
-                        <span className="material-symbols-outlined text-lg">person_remove</span>
+                        <span className="material-symbols-outlined text-xl">person_remove</span>
                       </button>
                     )}
                   </div>

@@ -66,13 +66,13 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
         }}
         className="fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none"
       >
-        <motion.span 
+        <motion.div 
           animate={{ rotate: [-5, 5, -5] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="material-symbols-outlined text-6xl text-[#fabd04] mb-4 drop-shadow-lg"
+          className="mb-4 drop-shadow-lg"
         >
-          sailing
-        </motion.span>
+          <span className="material-symbols-outlined text-[#fabd04] text-7xl">sailing</span>
+        </motion.div>
         <h2 className="font-serif text-5xl font-bold text-[#d3e4fa] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
           {room.currentRound < 10 ? `¡Ronda ${room.currentRound + 1}!` : '¡Fin de la Partida!'}
         </h2>
@@ -90,7 +90,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
         {sortedPlayers[0] && (
           <div className="col-span-12 bg-gradient-to-br from-[#362600] to-[#1b2b3b] rounded-xl p-6 relative overflow-hidden shadow-2xl">
             <div className="absolute -right-4 -top-4 opacity-10 rotate-12">
-              <span className="material-symbols-outlined text-8xl">military_tech</span>
+              <span className="material-symbols-outlined text-9xl">workspace_premium</span>
             </div>
             <div className="flex items-end justify-between relative z-10">
               <div className="flex items-center gap-4">

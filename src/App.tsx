@@ -145,7 +145,7 @@ export default function App() {
             className="text-[#ffb3ae] hover:bg-[#ffb3ae]/10 p-2 rounded-full transition-colors flex items-center justify-center"
             title="Abandonar Sala"
           >
-            <span className="material-symbols-outlined text-xl">logout</span>
+            <span className="material-symbols-outlined">logout</span>
           </button>
         </div>
       </header>
@@ -160,11 +160,11 @@ export default function App() {
       {/* Bottom Navigation */}
       {room.status !== 'LOBBY' && (
         <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#041424]/80 backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,15,30,0.5)]">
-          <div className="flex flex-col items-center justify-center px-4 py-1.5 text-[#f0bd8b]/60">
+          <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
             <span className="material-symbols-outlined mb-1">edit_note</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">Apuestas</span>
           </div>
-          <div className="flex flex-col items-center justify-center px-4 py-1.5 text-[#f0bd8b]/60">
+          <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'RESULTS' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
             <span className="material-symbols-outlined mb-1">equalizer</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">Resultados</span>
           </div>
