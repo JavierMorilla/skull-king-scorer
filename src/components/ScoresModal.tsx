@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Room, Player } from '../types';
 import { auth } from '../firebase';
 import { kickPlayer } from '../services/gameService';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ScoresModalProps {
   isOpen: boolean;
@@ -12,11 +13,12 @@ interface ScoresModalProps {
 }
 
 export default function ScoresModal({ isOpen, onClose, room, players }: ScoresModalProps) {
+  const { t } = useLanguage();
   const isHost = room.hostId === auth.currentUser?.uid;
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
   const handleKick = async (playerId: string) => {
-    if (window.confirm('¿Estás seguro de que quieres expulsar a este jugador?')) {
+    if (window.confirm(t('lobby.kickConfirm'))) {
       try {
         await kickPlayer(room.id, playerId);
       } catch (error) {
@@ -43,7 +45,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
             className="bg-[#1b2b3b] rounded-2xl p-6 w-full max-w-md shadow-2xl border border-[#263647]"
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-serif text-2xl text-[#d3e4fa]">Puntuaciones Actuales</h2>
+              <h2 className="font-serif text-2xl text-[#d3e4fa]">{t('score.title')}</h2>
               <button
                 onClick={onClose}
                 className="text-[#f0bd8b]/60 hover:text-[#f0bd8b] transition-colors"
@@ -59,18 +61,15 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
                   className="flex items-center justify-between bg-[#041424]/50 p-3 rounded-xl border border-[#263647]/50"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#263647] flex items-center justify-center text-xl">
-                      {player.avatar}
-                    </div>
                     <div>
                       <div className="font-sans text-[#d3e4fa] font-medium flex items-center gap-2">
                         {player.name}
                         {player.id === room.hostId && (
-                          <span className="material-symbols-outlined text-[#fabd04] text-base" title="Capitán">sailing</span>
+                          <span className="material-symbols-outlined text-[#fabd04] text-base" title={t('lobby.host')}>sailing</span>
                         )}
                       </div>
                       <div className="text-xs text-[#f0bd8b]/60 font-mono">
-                        {index + 1}º Lugar
+                        {t('score.place', { num: index + 1 })}
                       </div>
                     </div>
                   </div>
@@ -83,7 +82,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
                       <button
                         onClick={() => handleKick(player.id)}
                         className="text-red-500/70 hover:text-red-400 transition-colors p-1 rounded-lg hover:bg-red-500/10"
-                        title="Expulsar jugador"
+                        title={t('lobby.kickTitle')}
                       >
                         <span className="material-symbols-outlined text-xl">person_remove</span>
                       </button>

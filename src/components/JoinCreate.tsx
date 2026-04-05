@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { createRoom, joinRoom } from '../services/gameService';
 import { auth } from '../firebase';
 import { signInAnonymously, updateProfile } from 'firebase/auth';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface JoinCreateProps {
   onJoin: (roomId: string) => void;
 }
 
 export default function JoinCreate({ onJoin }: JoinCreateProps) {
+  const { t } = useLanguage();
   const [nickname, setNickname] = useState(auth.currentUser?.displayName || '');
   const [roomCode, setRoomCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,11 +39,13 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
     lootEnabled: false,
   });
   const [showSettings, setShowSettings] = useState(false);
+  const [showLocalSetup, setShowLocalSetup] = useState(false);
+  const [localPlayers, setLocalPlayers] = useState<string[]>(['', '']);
 
   const handleCreate = async () => {
     setErrorMsg('');
     if (!nickname.trim()) {
-      setErrorMsg('¡Debes ingresar un apodo para continuar!');
+      setErrorMsg(t('join.errorNoNickname'));
       return;
     }
     setLoading(true);
@@ -49,13 +53,12 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
       await handleAuth();
       const roomId = await createRoom(
         nickname.trim(), 
-        auth.currentUser?.photoURL || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + nickname.trim(),
         settings
       );
       onJoin(roomId);
     } catch (error) {
       console.error(error);
-      setErrorMsg('Error al crear la sala. Inténtalo de nuevo.');
+      setErrorMsg(t('join.errorCreate'));
     }
     setLoading(false);
   };
@@ -63,28 +66,185 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
   const handleJoin = async () => {
     setErrorMsg('');
     if (!nickname.trim()) {
-      setErrorMsg('¡Debes ingresar un apodo para continuar!');
+      setErrorMsg(t('join.errorNoNickname'));
       return;
     }
     if (!roomCode || roomCode.trim().length !== 4) {
-      setErrorMsg('Debes ingresar un código de 4 letras válido.');
+      setErrorMsg(t('join.errorCode'));
       return;
     }
     setLoading(true);
     try {
       await handleAuth();
-      await joinRoom(roomCode.trim().toUpperCase(), nickname.trim(), auth.currentUser?.photoURL || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + nickname.trim());
+      await joinRoom(roomCode.trim().toUpperCase(), nickname.trim());
       onJoin(roomCode.trim().toUpperCase());
     } catch (error) {
       console.error(error);
       if (error instanceof Error && error.message === 'NICKNAME_TAKEN') {
-        setErrorMsg(`Ya hay un jugador llamado "${nickname.trim()}" en esta sala. Por favor, elige otro apodo.`);
+        setErrorMsg(t('join.errorTaken', { name: nickname.trim() }));
       } else {
-        setErrorMsg('Error al unirse a la sala. Verifica que el código sea correcto.');
+        setErrorMsg(t('join.errorJoin'));
       }
     }
     setLoading(false);
   };
+
+  const handleStartLocal = () => {
+    const validPlayers = localPlayers.filter(p => p.trim() !== '');
+    if (validPlayers.length < 2) {
+      setErrorMsg(t('join.errorMinPlayers'));
+      return;
+    }
+    // Pass a special flag to indicate local game
+    localStorage.setItem('skullking_local_setup', JSON.stringify({ players: validPlayers, settings }));
+    onJoin('LOCAL_GAME');
+  };
+
+  const addLocalPlayer = () => {
+    if (localPlayers.length < 8) {
+      setLocalPlayers([...localPlayers, '']);
+    }
+  };
+
+  const updateLocalPlayer = (index: number, value: string) => {
+    const newPlayers = [...localPlayers];
+    newPlayers[index] = value;
+    setLocalPlayers(newPlayers);
+  };
+
+  const removeLocalPlayer = (index: number) => {
+    if (localPlayers.length > 2) {
+      const newPlayers = localPlayers.filter((_, i) => i !== index);
+      setLocalPlayers(newPlayers);
+    }
+  };
+
+  if (showLocalSetup) {
+    return (
+      <div className="min-h-screen bg-[#041424] flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#fabd04] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#d3e4fa] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-blob animation-delay-2000"></div>
+
+        <div className="relative w-full max-w-md flex flex-col items-center gap-8 text-center z-10">
+          <section className="flex flex-col items-center">
+            <h2 className="text-4xl font-serif font-bold text-[#d3e4fa] tracking-tight leading-none mb-2">
+              {t('join.localMode')}
+            </h2>
+            <p className="font-mono text-[#f0bd8b] opacity-60 uppercase tracking-widest text-xs">{t('join.localSubtitle')}</p>
+          </section>
+
+          <section className="w-full space-y-6">
+            {errorMsg && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl font-mono text-sm">
+                {errorMsg}
+              </div>
+            )}
+
+            <div className="space-y-3 text-left">
+              <label className="block font-mono text-xs uppercase tracking-widest text-[#f0bd8b]/60 ml-1">{t('join.players')}</label>
+              {localPlayers.map((player, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    value={player}
+                    onChange={(e) => updateLocalPlayer(index, e.target.value)}
+                    placeholder={`${t('join.player')} ${index + 1}`} 
+                    className="w-full bg-[#1b2b3b] border border-[#44474c]/30 h-12 px-4 rounded-xl font-serif text-lg text-[#d3e4fa] placeholder:text-[#d3e4fa]/30 focus:ring-2 focus:ring-[#fabd04]/50 transition-all"
+                  />
+                  {localPlayers.length > 2 && (
+                    <button onClick={() => removeLocalPlayer(index)} className="text-red-400/70 hover:text-red-400 p-2">
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  )}
+                </div>
+              ))}
+              {localPlayers.length < 8 && (
+                <button onClick={addLocalPlayer} className="w-full py-3 mt-2 border-2 border-dashed border-[#44474c]/30 rounded-xl text-[#f0bd8b]/60 font-mono text-sm uppercase tracking-widest hover:border-[#fabd04]/30 hover:text-[#fabd04] transition-colors flex items-center justify-center gap-2">
+                  <span className="material-symbols-outlined">add</span>
+                  {t('join.addPlayer')}
+                </button>
+              )}
+            </div>
+
+            <div className="bg-[#1b2b3b] rounded-2xl p-4 border border-[#44474c]/30 text-left">
+              <button 
+                onClick={() => setShowSettings(!showSettings)}
+                className="w-full flex items-center justify-between group"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#fabd04] text-xl">settings_suggest</span>
+                  <p className="font-mono text-sm uppercase tracking-widest text-[#f0bd8b]/80 group-hover:text-[#f0bd8b] transition-colors">{t('join.rules')}</p>
+                </div>
+                {showSettings ? (
+                  <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors text-xl">expand_less</span>
+                ) : (
+                  <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors text-xl">expand_more</span>
+                )}
+              </button>
+              
+              {showSettings && (
+                <div className="grid grid-cols-1 gap-3 mt-4">
+                  {[
+                    { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
+                    { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
+                    { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+                    { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
+                    { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
+                    { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+                  ].map((option) => {
+                    const isEnabled = settings[option.id as keyof typeof settings];
+                    return (
+                      <div 
+                        key={option.id}
+                        onClick={() => setSettings(s => ({ ...s, [option.id]: !isEnabled }))}
+                        className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${isEnabled ? `${option.bg} ${option.border}` : 'bg-[#041424]/50 border-transparent hover:bg-[#041424]'}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isEnabled ? option.bg : 'bg-[#1b2b3b]'}`}>
+                            {option.iconType === 'emoji' ? (
+                              <span className="text-lg">{option.icon}</span>
+                            ) : option.iconType === 'material' ? (
+                              <span className={`material-symbols-outlined text-lg ${isEnabled ? option.color : 'text-[#c4c6cc]/50'}`}>{option.icon}</span>
+                            ) : (
+                              <span className={`font-mono font-bold text-sm ${isEnabled ? option.color : 'text-[#c4c6cc]/50'}`}>{option.icon}</span>
+                            )}
+                          </div>
+                          <div>
+                            <p className={`font-sans font-bold text-sm ${isEnabled ? option.color : 'text-[#c4c6cc]'}`}>{option.title}</p>
+                            <p className="font-mono text-[10px] text-[#c4c6cc]/60 leading-tight mt-0.5">{option.desc}</p>
+                          </div>
+                        </div>
+                        <div className={`w-10 h-6 rounded-full p-1 transition-colors ${isEnabled ? option.switchBg : 'bg-[#263647]'}`}>
+                          <div className={`w-4 h-4 rounded-full bg-[#041424] transition-transform ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setShowLocalSetup(false)}
+                className="w-1/3 h-16 rounded-xl bg-[#263647] text-[#d3e4fa] font-serif font-bold text-lg shadow-xl hover:bg-[#364657] transition-colors active:scale-95"
+              >
+                {t('join.back')}
+              </button>
+              <button 
+                onClick={handleStartLocal}
+                className="w-2/3 h-16 bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] rounded-xl font-serif font-bold text-xl shadow-xl shadow-[#fabd04]/20 hover:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-2xl">play_arrow</span>
+                {t('join.startLocal')}
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-12 relative min-h-screen bg-[#041424]">
@@ -93,12 +253,12 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
       <div className="relative w-full max-w-md flex flex-col items-center gap-12 text-center z-10">
         <section className="flex flex-col items-center">
           <div className="w-24 h-24 mb-6 bg-[#1b2b3b] rounded-full flex items-center justify-center shadow-xl shadow-black/40 border-2 border-[#fabd04]/20">
-            <span className="material-symbols-outlined text-[#fabd04] text-5xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+            <span className="material-symbols-outlined text-[#fabd04] text-[60px]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
           </div>
           <h2 className="text-5xl md:text-6xl font-serif font-bold text-[#d3e4fa] tracking-tight leading-none mb-2">
-            Skull King <span className="block italic text-[#fabd04]">Tracker</span>
+            Skill King <span className="block italic text-[#fabd04]">Scorer</span>
           </h2>
-          <p className="font-mono text-[#f0bd8b] opacity-60 uppercase tracking-widest text-xs">Bitácora Digital del Capitán</p>
+          <p className="font-mono text-[#f0bd8b] opacity-60 uppercase tracking-widest text-xs">{t('join.subtitle')}</p>
         </section>
 
         <section className="w-full space-y-8">
@@ -110,14 +270,14 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
           )}
 
           <div className="group">
-            <label className="block text-left font-mono text-xs uppercase tracking-widest text-[#f0bd8b]/60 mb-2 ml-1" htmlFor="nickname">Apodo del Capitán</label>
+            <label className="block text-left font-mono text-xs uppercase tracking-widest text-[#f0bd8b]/60 mb-2 ml-1" htmlFor="nickname">{t('join.nicknameLabel')}</label>
             <div className="relative">
               <input 
                 id="nickname" 
                 type="text" 
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                placeholder="Ingresa tu apodo..." 
+                placeholder={t('join.nicknamePlaceholder')} 
                 className="w-full bg-[#f0bd8b] border-none h-16 px-6 rounded-xl font-serif text-2xl text-[#261a00] placeholder:text-[#261a00]/40 focus:ring-4 focus:ring-[#fabd04]/20 transition-all"
                 style={{ backgroundImage: 'radial-gradient(#d4a373 0.5px, transparent 0.5px)', backgroundSize: '10px 10px', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)' }}
               />
@@ -135,7 +295,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
               >
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[#fabd04] text-xl">settings_suggest</span>
-                  <p className="font-mono text-sm uppercase tracking-widest text-[#f0bd8b]/80 group-hover:text-[#f0bd8b] transition-colors">Reglas de la Flota</p>
+                  <p className="font-mono text-sm uppercase tracking-widest text-[#f0bd8b]/80 group-hover:text-[#f0bd8b] transition-colors">{t('join.rules')}</p>
                 </div>
                 {showSettings ? (
                   <span className="material-symbols-outlined text-[#f0bd8b]/60 group-hover:text-[#f0bd8b] transition-colors text-xl">expand_less</span>
@@ -155,12 +315,12 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                       {[
-                        { id: 'krakenEnabled', title: 'Kraken', desc: 'Destruye una baza por completo', icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
-                        { id: 'whiteWhaleEnabled', title: 'Ballena Blanca', desc: 'Anula capturas de personajes', icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
-                        { id: 'characterBonusesEnabled', title: 'Capturas', desc: 'Puntos por Sirena, Pirata y Rey', icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
-                        { id: 'fourteenBonusesEnabled', title: 'Cartas 14', desc: 'Bonus por ganar con cartas 14', icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
-                        { id: 'extraBetEnabled', title: 'Apuesta Extra', desc: 'Arriesga ±10 o ±20 puntos (Rascal)', icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
-                        { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+                        { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
+                        { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
+                        { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+                        { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
+                        { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
+                        { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
                       ].map((option) => {
                         const isEnabled = settings[option.id as keyof typeof settings];
                         return (
@@ -206,14 +366,14 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
               ) : (
                 <>
                   <span className="material-symbols-outlined text-3xl">meeting_room</span>
-                  Crear Sala
+                  {t('join.createBtn')}
                 </>
               )}
             </button>
 
             <div className="flex items-center gap-4 py-4">
               <div className="h-px flex-grow bg-[#44474c] opacity-20"></div>
-              <span className="font-mono text-xs text-[#f0bd8b]/40 uppercase tracking-widest">o únete a una flota</span>
+              <span className="font-mono text-xs text-[#f0bd8b]/40 uppercase tracking-widest">{t('join.or')}</span>
               <div className="h-px flex-grow bg-[#44474c] opacity-20"></div>
             </div>
 
@@ -222,7 +382,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 type="text" 
                 value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value)}
-                placeholder="CÓDIGO" 
+                placeholder={t('join.codePlaceholder')} 
                 maxLength={4}
                 className="w-full min-w-0 flex-grow bg-transparent border-none font-mono text-lg sm:text-xl tracking-[0.3em] sm:tracking-[0.5em] text-center text-[#fabd04] placeholder:text-[#fabd04]/20 focus:ring-0 uppercase [font-variant-numeric:slashed-zero]" 
               />
@@ -234,10 +394,24 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-[#d3e4fa]/30 border-t-[#d3e4fa] rounded-full animate-spin"></div>
                 ) : (
-                  'Unirse'
+                  t('join.joinBtn')
                 )}
               </button>
             </div>
+
+            <div className="flex items-center gap-4 py-4">
+              <div className="h-px flex-grow bg-[#44474c] opacity-20"></div>
+              <span className="font-mono text-xs text-[#f0bd8b]/40 uppercase tracking-widest">{t('join.or')}</span>
+              <div className="h-px flex-grow bg-[#44474c] opacity-20"></div>
+            </div>
+
+            <button 
+              onClick={() => setShowLocalSetup(true)}
+              className="w-full h-16 rounded-xl bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] font-serif text-2xl font-bold shadow-2xl shadow-[#fabd04]/20 hover:scale-[0.98] transition-transform flex items-center justify-center gap-3"
+            >
+              <span className="material-symbols-outlined text-3xl">devices</span>
+              {t('join.localModeBtn')}
+            </button>
           </div>
         </section>
       </div>

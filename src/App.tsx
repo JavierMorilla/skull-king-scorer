@@ -5,6 +5,7 @@ import { doc, collection, onSnapshot, query } from 'firebase/firestore';
 import { AnimatePresence } from 'motion/react';
 import { Room, Player, Bid, Result } from './types';
 import { leaveRoom } from './services/gameService';
+import { useLanguage } from './i18n/LanguageContext';
 import JoinCreate from './components/JoinCreate';
 import Lobby from './components/Lobby';
 import Betting from './components/Betting';
@@ -13,8 +14,11 @@ import Leaderboard from './components/Leaderboard';
 import ConfirmModal from './components/ConfirmModal';
 import Loader from './components/Loader';
 import ScoresModal from './components/ScoresModal';
+import LocalGame from './components/LocalGame';
+import LanguageSelector from './components/LanguageSelector';
 
 export default function App() {
+  const { t, language, setLanguage } = useLanguage();
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [roomId, setRoomId] = useState<string | null>(() => {
     return localStorage.getItem('skullking_roomId');
@@ -43,7 +47,7 @@ export default function App() {
   }, [roomId]);
 
   useEffect(() => {
-    if (!isAuthReady || !roomId || !auth.currentUser) return;
+    if (!isAuthReady || !roomId || roomId === 'LOCAL_GAME' || !auth.currentUser) return;
 
     // Room listener
     const roomUnsub = onSnapshot(doc(db, 'rooms', roomId), (doc) => {
@@ -87,7 +91,7 @@ export default function App() {
   }, [roomId, isAuthReady]);
 
   useEffect(() => {
-    if (!isAuthReady || !roomId || !room?.currentRound || !auth.currentUser) return;
+    if (!isAuthReady || !roomId || roomId === 'LOCAL_GAME' || !room?.currentRound || !auth.currentUser) return;
 
     // Bids listener
     const bidsUnsub = onSnapshot(collection(db, `rooms/${roomId}/rounds/${room.currentRound}/bids`), (snapshot) => {
@@ -117,8 +121,31 @@ export default function App() {
     );
   }
 
-  if (!roomId || !room) {
-    return <JoinCreate onJoin={setRoomId} />;
+  if (!roomId) {
+    return (
+      <div className="relative">
+        <div className="absolute top-4 right-4 z-50">
+          <LanguageSelector />
+        </div>
+        <JoinCreate onJoin={setRoomId} />
+      </div>
+    );
+  }
+
+  if (roomId === 'LOCAL_GAME') {
+    return (
+      <div className="relative">
+        <LocalGame onLeave={() => setRoomId(null)} />
+      </div>
+    );
+  }
+
+  if (!room) {
+    return (
+      <div className="min-h-screen bg-[#041424] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   const handleLeaveRoom = async () => {
@@ -134,16 +161,17 @@ export default function App() {
       <header className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>anchor</span>
-          <h1 className="text-2xl font-serif italic font-bold text-[#fabd04]">Skull King</h1>
+          <h1 className="text-2xl font-serif italic font-bold text-[#fabd04]">{t('app.title')}</h1>
         </div>
         <div className="flex items-center gap-3">
+          <LanguageSelector />
           <div className="font-mono text-sm text-[#fabd04] bg-[#1b2b3b] px-3 py-1 rounded-full border border-[#fabd04]/10 tracking-widest [font-variant-numeric:slashed-zero]">
             #{roomId}
           </div>
           <button 
             onClick={() => setShowLeaveConfirm(true)}
             className="text-[#ffb3ae] hover:bg-[#ffb3ae]/10 p-2 rounded-full transition-colors flex items-center justify-center"
-            title="Abandonar Sala"
+            title={t('app.leaveRoom')}
           >
             <span className="material-symbols-outlined">logout</span>
           </button>
@@ -162,18 +190,18 @@ export default function App() {
         <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#041424]/80 backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,15,30,0.5)]">
           <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
             <span className="material-symbols-outlined mb-1">edit_note</span>
-            <span className="font-mono text-[10px] uppercase tracking-tighter">Apuestas</span>
+            <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.bets')}</span>
           </div>
           <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'RESULTS' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
             <span className="material-symbols-outlined mb-1">equalizer</span>
-            <span className="font-mono text-[10px] uppercase tracking-tighter">Resultados</span>
+            <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.results')}</span>
           </div>
           <div 
             onClick={() => room.status !== 'LEADERBOARD' && setShowScoresModal(true)}
             className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'LEADERBOARD' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60 cursor-pointer hover:text-[#f0bd8b] active:scale-95'}`}
           >
             <span className="material-symbols-outlined mb-1">military_tech</span>
-            <span className="font-mono text-[10px] uppercase tracking-tighter">Clasificación</span>
+            <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.leaderboard')}</span>
           </div>
         </nav>
       )}
@@ -187,10 +215,10 @@ export default function App() {
 
       <ConfirmModal
         isOpen={showLeaveConfirm}
-        title="Abandonar Sala"
-        message="¿Estás seguro de que quieres abandonar esta sala? Tendrás que volver a unirte con el código si quieres regresar."
-        confirmText="Abandonar"
-        cancelText="Quedarme"
+        title={t('app.leaveConfirmTitle')}
+        message={t('app.leaveConfirmMsg')}
+        confirmText={t('app.leave')}
+        cancelText={t('app.stay')}
         isDestructive={true}
         onConfirm={handleLeaveRoom}
         onCancel={() => setShowLeaveConfirm(false)}

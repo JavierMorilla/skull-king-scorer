@@ -4,6 +4,7 @@ import { Room, Player } from '../types';
 import { startGame, toggleReady, updateRoomSettings, kickPlayer } from '../services/gameService';
 import { auth } from '../firebase';
 import ConfirmModal from './ConfirmModal';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface LobbyProps {
   room: Room;
@@ -28,6 +29,7 @@ const Switch = ({ checked, onChange, colorClass = "bg-[#fabd04]", disabled = fal
 );
 
 export default function Lobby({ room, players }: LobbyProps) {
+  const { t } = useLanguage();
   const [showStartConfirm, setShowStartConfirm] = useState(false);
   const isHost = room.hostId === auth.currentUser?.uid;
   const currentPlayer = players.find(p => p.id === auth.currentUser?.uid);
@@ -60,7 +62,7 @@ export default function Lobby({ room, players }: LobbyProps) {
   };
 
   const handleKick = async (playerId: string) => {
-    if (window.confirm('¿Estás seguro de que quieres expulsar a este jugador?')) {
+    if (window.confirm(t('lobby.kickConfirm'))) {
       try {
         await kickPlayer(room.id, playerId);
       } catch (error) {
@@ -81,24 +83,21 @@ export default function Lobby({ room, players }: LobbyProps) {
         <div className="absolute inset-0 -z-10 opacity-10 flex justify-center items-center overflow-hidden">
           <span className="material-symbols-outlined text-[#d3e4fa] text-[12rem]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
         </div>
-        <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#d3e4fa] mb-2">Reúne a tu Tripulación</h2>
-        <p className="text-[#f0bd8b] opacity-80 font-sans text-lg italic">Esperando a que cambie la marea...</p>
+        <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#d3e4fa] mb-2">{t('lobby.title')}</h2>
+        <p className="text-[#f0bd8b] opacity-80 font-sans text-lg italic">{t('lobby.subtitle')}</p>
       </section>
 
       <div className="grid grid-cols-1 gap-4">
         {players.map(player => (
           <div key={player.id} className="bg-[#1b2b3b] p-5 rounded-xl flex items-center justify-between group transition-all hover:bg-[#2b3b4b]/50 shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#fabd04]/40 p-0.5">
-                <img src={player.avatar} alt="Avatar" className="w-full h-full object-cover bg-[#0c1d2c]" />
-              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="font-serif font-bold text-xl text-[#d3e4fa]">{player.name}</p>
                   {player.isHost && <span className="material-symbols-outlined text-[#fabd04] text-base" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>}
                 </div>
                 <p className="font-mono text-xs text-[#f0bd8b]/60 uppercase tracking-tighter">
-                  {player.isHost ? 'Capitán & Host' : 'Marinero'}
+                  {player.isHost ? t('lobby.host') : t('lobby.sailor')}
                 </p>
               </div>
             </div>
@@ -107,19 +106,19 @@ export default function Lobby({ room, players }: LobbyProps) {
               {player.isReady ? (
                 <div className="flex items-center gap-2 bg-[#fabd04]/10 px-3 py-1.5 rounded-full border border-[#fabd04]/20">
                   <span className="material-symbols-outlined text-[#fabd04] text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  <span className="font-mono text-xs font-bold text-[#fabd04]">LISTO</span>
+                  <span className="font-mono text-xs font-bold text-[#fabd04]">{t('lobby.ready')}</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 bg-[#263647] px-3 py-1.5 rounded-full border border-[#44474c]/30">
                   <span className="material-symbols-outlined text-[#c4c6cc] text-base">hourglass_empty</span>
-                  <span className="font-mono text-xs font-bold text-[#c4c6cc]">ESPERANDO</span>
+                  <span className="font-mono text-xs font-bold text-[#c4c6cc]">{t('lobby.waiting')}</span>
                 </div>
               )}
               {isHost && player.id !== auth.currentUser?.uid && (
                 <button
                   onClick={() => handleKick(player.id)}
                   className="text-red-500/70 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-red-500/10"
-                  title="Expulsar jugador"
+                  title={t('lobby.kickTitle')}
                 >
                   <span className="material-symbols-outlined text-xl">person_remove</span>
                 </button>
@@ -132,7 +131,7 @@ export default function Lobby({ room, players }: LobbyProps) {
         <div className="border-2 border-dashed border-[#44474c]/20 p-5 rounded-xl flex items-center justify-center group hover:border-[#fabd04]/30 transition-colors">
           <div className="flex flex-col items-center gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
             <span className="material-symbols-outlined text-2xl">person_add</span>
-            <p className="font-mono text-xs font-medium uppercase tracking-widest">Esperando Bucaneros...</p>
+            <p className="font-mono text-xs font-medium uppercase tracking-widest">{t('lobby.emptySlot')}</p>
           </div>
         </div>
       </div>
@@ -140,16 +139,16 @@ export default function Lobby({ room, players }: LobbyProps) {
       <div className="mt-8">
         <h3 className="font-serif text-2xl font-bold text-[#d3e4fa] mb-4 flex items-center gap-2">
           <span className="material-symbols-outlined text-[#fabd04] text-2xl">settings_suggest</span>
-          Reglas de la Flota
+          {t('join.rules')}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { id: 'krakenEnabled', title: 'Kraken', desc: 'Destruye una baza por completo', icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
-            { id: 'whiteWhaleEnabled', title: 'Ballena Blanca', desc: 'Anula capturas de personajes', icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
-            { id: 'characterBonusesEnabled', title: 'Capturas', desc: 'Puntos por Sirena, Pirata y Rey', icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
-            { id: 'fourteenBonusesEnabled', title: 'Cartas 14', desc: 'Bonus por ganar con cartas 14', icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
-            { id: 'extraBetEnabled', title: 'Apuesta Extra', desc: 'Arriesga ±10 o ±20 puntos (Rascal)', icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
-            { id: 'lootEnabled', title: 'El Botín', desc: 'Alianzas entre jugadores (+20 pts)', icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+            { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
+            { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
+            { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
+            { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-[#f0bd8b]', bg: 'bg-[#f0bd8b]/10', border: 'border-[#f0bd8b]', switchBg: 'bg-[#f0bd8b]' },
+            { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-[#c4c6cc]', bg: 'bg-[#c4c6cc]/10', border: 'border-[#c4c6cc]', switchBg: 'bg-[#c4c6cc]' },
+            { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-[#fabd04]', bg: 'bg-[#fabd04]/10', border: 'border-[#fabd04]', switchBg: 'bg-[#fabd04]' },
           ].map((option) => {
             const isEnabled = room.settings?.[option.id as keyof typeof room.settings] || false;
             return (
@@ -193,7 +192,7 @@ export default function Lobby({ room, players }: LobbyProps) {
               className={`w-full py-4 rounded-xl font-serif font-bold text-lg shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3 ${currentPlayer?.isReady ? 'bg-[#263647] text-[#d3e4fa]' : 'bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00]'}`}
             >
               <span className="material-symbols-outlined text-2xl">{currentPlayer?.isReady ? 'close' : 'check'}</span>
-              {currentPlayer?.isReady ? 'Cancelar' : 'Estoy Listo'}
+              {currentPlayer?.isReady ? t('lobby.btnCancel') : t('lobby.btnReady')}
             </button>
           ) : (
             <button 
@@ -202,7 +201,7 @@ export default function Lobby({ room, players }: LobbyProps) {
               className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] py-4 rounded-xl font-serif font-bold text-lg shadow-xl shadow-[#fabd04]/10 active:scale-95 transition-transform flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
-              Empezar Partida
+              {t('lobby.btnStart')}
             </button>
           )}
         </div>
@@ -210,10 +209,10 @@ export default function Lobby({ room, players }: LobbyProps) {
 
       <ConfirmModal
         isOpen={showStartConfirm}
-        title="Empezar Partida"
-        message="¿Están todos los grumetes a bordo? Una vez que empiece la partida, no se podrán unir nuevos jugadores."
-        confirmText="¡Al Abordaje!"
-        cancelText="Esperar más"
+        title={t('lobby.startTitle')}
+        message={t('lobby.startMsg')}
+        confirmText={t('lobby.startConfirm')}
+        cancelText={t('lobby.startWait')}
         onConfirm={confirmStart}
         onCancel={() => setShowStartConfirm(false)}
       />

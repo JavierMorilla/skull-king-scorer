@@ -4,6 +4,7 @@ import { Room, Player, Bid, Result } from '../types';
 import { submitResult, calculateRoundScores, deleteResult } from '../services/gameService';
 import { auth, db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ResultsProps {
   room: Room;
@@ -29,6 +30,7 @@ const Switch = ({ checked, onChange, colorClass = "bg-[#fabd04]" }: { checked: b
 );
 
 export default function Results({ room, players, bids, results }: ResultsProps) {
+  const { t } = useLanguage();
   const currentPlayer = players.find(p => p.id === auth.currentUser?.uid);
   const currentBidObj = bids.find(b => b.playerId === auth.currentUser?.uid);
   const currentBid = currentBidObj?.bid || 0;
@@ -83,7 +85,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
       );
     } catch (error) {
       console.error(error);
-      alert('Error al enviar resultados');
+      alert(t('res.errorSubmit'));
     }
     setLoading(false);
   };
@@ -101,6 +103,19 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
     setLoading(false);
   };
 
+  const getTranslatedError = (errorStr: string) => {
+    if (errorStr.startsWith('ERROR_TRICKS_MISMATCH')) {
+      const parts = errorStr.split('|');
+      return t('res.errorTricksMismatch', { total: parts[1], expected: parts[2] });
+    }
+    if (errorStr === 'ERROR_MULTIPLE_SKULL_KINGS') return t('res.errorMultipleSkullKings');
+    if (errorStr === 'ERROR_TOO_MANY_MERMAIDS') return t('res.errorTooManyMermaids');
+    if (errorStr === 'ERROR_TOO_MANY_PIRATES') return t('res.errorTooManyPirates');
+    if (errorStr === 'ERROR_TOO_MANY_14S') return t('res.errorTooMany14s');
+    if (errorStr === 'ERROR_GENERIC') return t('res.errorCalc');
+    return errorStr;
+  };
+
   if (hasResult) {
     return (
       <motion.div 
@@ -113,12 +128,12 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
         {room.roundError && (
           <div className="bg-red-900/50 border border-red-500/50 text-red-200 p-4 rounded-xl mb-6 w-full max-w-xs mx-auto">
             <span className="material-symbols-outlined text-red-400 mb-2 block mx-auto text-3xl">warning</span>
-            <p className="font-sans text-sm">{room.roundError}</p>
+            <p className="font-sans text-sm">{getTranslatedError(room.roundError)}</p>
           </div>
         )}
         <span className="material-symbols-outlined text-[#fabd04] text-6xl mb-4 animate-pulse">explore</span>
-        <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Botín Registrado</h2>
-        <p className="text-[#f0bd8b]/80 font-sans">Esperando a que el resto de la tripulación cuente su botín...</p>
+        <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">{t('res.registeredTitle')}</h2>
+        <p className="text-[#f0bd8b]/80 font-sans">{t('res.registeredSub')}</p>
         <div className="mt-8 space-y-2">
           {players.map(p => {
             const playerResult = results.find(r => r.playerId === p.id);
@@ -140,7 +155,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
           className="mt-8 bg-[#1b2b3b] text-[#fabd04] py-3 px-6 rounded-xl border border-[#fabd04]/30 shadow-lg hover:bg-[#263647] transition-colors flex items-center gap-2 mx-auto active:scale-95 disabled:opacity-50"
         >
           <span className="material-symbols-outlined text-base">edit</span>
-          <span className="font-mono uppercase tracking-wider text-sm">Editar Botín</span>
+          <span className="font-mono uppercase tracking-wider text-sm">{t('res.edit')}</span>
         </button>
       </motion.div>
     );
@@ -159,13 +174,13 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
           <div className="absolute -left-4 -top-4 opacity-10 pointer-events-none">
             <span className="material-symbols-outlined text-[10rem]">menu_book</span>
           </div>
-          <h2 className="font-serif text-4xl font-bold text-[#f0bd8b] mb-1 ml-4 relative z-10">Ronda {room.currentRound}</h2>
-          <p className="font-mono text-sm uppercase tracking-[0.2em] text-[#c4c6cc] ml-4 relative z-10">Entrada del Cuaderno de Bitácora</p>
+          <h2 className="font-serif text-4xl font-bold text-[#f0bd8b] mb-1 ml-4 relative z-10">{t('bet.round', { num: room.currentRound })}</h2>
+          <p className="font-mono text-sm uppercase tracking-[0.2em] text-[#c4c6cc] ml-4 relative z-10">{t('res.logbook')}</p>
         </div>
         <button 
           onClick={() => setShowBidsModal(true)}
           className="bg-[#1b2b3b] text-[#fabd04] p-3 rounded-xl border border-[#fabd04]/30 shadow-lg hover:bg-[#263647] transition-colors flex items-center gap-2 z-10 active:scale-95"
-          title="Ver Apuestas"
+          title={t('res.viewBets')}
         >
           <span className="material-symbols-outlined text-2xl">visibility</span>
         </button>
@@ -177,16 +192,16 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
         <div className="flex justify-between items-end mb-8 relative z-10">
           <div>
             <h3 className="font-serif text-2xl text-[#d3e4fa]">{currentPlayer?.name}</h3>
-            <p className="font-mono text-[#fabd04] text-sm">Apuesta actual: <span className="text-lg">{currentBid}</span> Bazas</p>
+            <p className="font-mono text-[#fabd04] text-sm">{t('res.currentBet')} <span className="text-lg">{currentBid}</span> {t('res.tricks')}</p>
           </div>
           <div className="text-right">
-            <span className="font-mono text-xs text-[#c4c6cc] block uppercase">Puntaje Total</span>
+            <span className="font-mono text-xs text-[#c4c6cc] block uppercase">{t('res.totalScore')}</span>
             <span className="font-mono text-3xl font-bold text-[#f0bd8b]">{currentPlayer?.score || 0}</span>
           </div>
         </div>
 
         <div className="mb-10 bg-[#0c1d2c] rounded-lg p-5 relative z-10">
-          <label className="font-mono text-sm text-[#c4c6cc] uppercase tracking-widest block mb-4 text-center">Bazas Ganadas</label>
+          <label className="font-mono text-sm text-[#c4c6cc] uppercase tracking-widest block mb-4 text-center">{t('res.tricksWon')}</label>
           <div className="flex items-center justify-between gap-4">
             <button 
               onClick={() => {
@@ -222,8 +237,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[#ffb3ae] text-2xl">water_drop</span>
                 <div className="text-left">
-                  <span className="font-sans font-bold text-[#d3e4fa] block">Kraken Destructor</span>
-                  <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">¿Se destruyó una baza?</span>
+                  <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.krakenTitle')}</span>
+                  <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('res.krakenSub')}</span>
                 </div>
               </div>
               <Switch 
@@ -241,8 +256,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[#d3e4fa] text-2xl">sailing</span>
                 <div className="text-left">
-                  <span className="font-sans font-bold text-[#d3e4fa] block">Ballena Blanca</span>
-                  <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">Anula capturas de personajes</span>
+                  <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.whaleTitle')}</span>
+                  <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('res.whaleSub')}</span>
                 </div>
               </div>
               <Switch 
@@ -259,8 +274,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
             <div className="flex items-center gap-3 mb-3">
               <span className="material-symbols-outlined text-[#fabd04] text-2xl">handshake</span>
               <div className="text-left">
-                <span className="font-sans font-bold text-[#d3e4fa] block">El Botín (Alianza)</span>
-                <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">¿Jugaste el botín? Elige aliado</span>
+                <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.lootTitle')}</span>
+                <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('res.lootSub')}</span>
               </div>
             </div>
             <select
@@ -268,7 +283,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
               onChange={(e) => setLootAlliance(e.target.value || null)}
               className="w-full bg-[#1b2b3b] border border-[#fabd04]/30 rounded-lg p-3 text-[#d3e4fa] font-sans focus:ring-2 focus:ring-[#fabd04]/50 outline-none"
             >
-              <option value="">No jugué el botín</option>
+              <option value="">{t('res.lootNone')}</option>
               {players.filter(p => p.id !== currentPlayer?.id).map(p => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
@@ -280,7 +295,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
           <>
             {room.settings?.characterBonusesEnabled && (
               <div className="mb-4 bg-[#0c1d2c] p-4 rounded-xl border border-[#fabd04]/20 relative z-10">
-                <p className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] mb-4">Capturas de Personajes</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] mb-4">{t('res.capTitle')}</p>
                 <div className="space-y-4">
                   <label className="flex items-center justify-between cursor-pointer group">
                     <div className="flex items-center gap-3">
@@ -288,8 +303,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                         <span className="material-symbols-outlined text-xl">waves</span>
                       </div>
                       <div className="text-left">
-                        <span className="font-sans font-bold text-[#d3e4fa] block">Sirena captura Rey</span>
-                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">+50 pts</span>
+                        <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.capMermaid')}</span>
+                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">{t('res.capMermaidPts')}</span>
                       </div>
                     </div>
                     <Switch 
@@ -305,8 +320,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                         <span className="material-symbols-outlined text-xl">crown</span>
                       </div>
                       <div className="text-left">
-                        <span className="font-sans font-bold text-[#d3e4fa] block">Rey captura Piratas</span>
-                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">+30 pts c/u</span>
+                        <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.capKing')}</span>
+                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">{t('res.capKingPts')}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -322,8 +337,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                         <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
                       </div>
                       <div className="text-left">
-                        <span className="font-sans font-bold text-[#d3e4fa] block">Pirata captura Sirena</span>
-                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">+20 pts c/u</span>
+                        <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.capPirate')}</span>
+                        <span className="font-mono text-[10px] text-[#c4c6cc] uppercase">{t('res.capPiratePts')}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -338,7 +353,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
 
             {room.settings?.fourteenBonusesEnabled && (
               <div className="mb-4 bg-[#0c1d2c] p-4 rounded-xl border border-[#f0bd8b]/20 relative z-10 space-y-4">
-                <p className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] mb-4">Cartas de Valor 14</p>
+                <p className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] mb-4">{t('res.14Title')}</p>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -346,8 +361,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                       <span className="material-symbols-outlined text-xl">diamond</span>
                     </div>
                     <div className="text-left">
-                      <span className="font-sans font-bold text-[#d3e4fa] block">14 de Color</span>
-                      <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">+10 pts c/u</span>
+                      <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.14Color')}</span>
+                      <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('res.14ColorPts')}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -363,8 +378,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                       <span className="material-symbols-outlined text-xl">flag</span>
                     </div>
                     <div className="text-left">
-                      <span className="font-sans font-bold text-[#d3e4fa] block">14 Negro (Pirata)</span>
-                      <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">+20 pts</span>
+                      <span className="font-sans font-bold text-[#d3e4fa] block">{t('res.14Black')}</span>
+                      <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('res.14BlackPts')}</span>
                     </div>
                   </div>
                   <Switch 
@@ -379,7 +394,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
         )}
 
         <p className="font-mono text-[10px] text-center text-[#c4c6cc] italic opacity-50 uppercase tracking-widest mt-6 relative z-10">
-          Asegúrese de que el botín sea correcto antes de zarpar
+          {t('res.warning')}
         </p>
       </div>
 
@@ -388,7 +403,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
         disabled={loading}
         className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] font-serif font-bold text-xl py-5 rounded-xl shadow-lg shadow-[#fabd04]/20 active:scale-95 duration-150 transition-transform disabled:opacity-50"
       >
-        Confirmar Resultados
+        {t('res.confirm')}
       </button>
 
       <div className="fixed top-1/2 -right-20 -translate-y-1/2 rotate-12 opacity-5 pointer-events-none">
@@ -418,7 +433,7 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
               
               <h3 className="font-serif text-2xl font-bold text-[#d3e4fa] mb-6 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#fabd04] text-2xl">visibility</span>
-                Apuestas de la Ronda
+                {t('res.betsTitle')}
               </h3>
               
               <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
