@@ -3,6 +3,7 @@ import { motion, animate, useMotionValue, useTransform, AnimatePresence } from '
 import { Room, Player, Result } from '../types';
 import { nextRound } from '../services/gameService';
 import { auth } from '../firebase';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface LeaderboardProps {
   room: Room;
@@ -29,6 +30,7 @@ const AnimatedScore = ({ score, scoreChange, delay = 0 }: { score: number, score
 };
 
 export default function Leaderboard({ room, players, results }: LeaderboardProps) {
+  const { t } = useLanguage();
   const isHost = room.hostId === auth.currentUser?.uid;
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,7 +76,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
           <span className="material-symbols-outlined text-[#fabd04] text-7xl">sailing</span>
         </motion.div>
         <h2 className="font-serif text-5xl font-bold text-[#d3e4fa] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-          {room.currentRound < 10 ? `¡Ronda ${room.currentRound + 1}!` : '¡Fin de la Partida!'}
+          {room.currentRound < 10 ? t('lead.round', { num: room.currentRound + 1 }) : t('lead.end')}
         </h2>
       </motion.div>
 
@@ -94,16 +96,13 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
             </div>
             <div className="flex items-end justify-between relative z-10">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full border-2 border-[#fabd04] overflow-hidden bg-[#263647]">
-                  <img src={sortedPlayers[0].avatar} alt="Avatar" className="w-full h-full object-cover" />
-                </div>
                 <div>
                   <span className="font-serif text-[#fabd04] text-4xl block italic leading-none">1st</span>
                   <h2 className="font-serif text-2xl text-[#d3e4fa] font-bold">{sortedPlayers[0].name}</h2>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-mono text-xs uppercase tracking-tighter text-[#c4c6cc] mb-1">Puntuación Total</p>
+                <p className="font-mono text-xs uppercase tracking-tighter text-[#c4c6cc] mb-1">{t('lead.total')}</p>
                 <motion.p 
                   key={sortedPlayers[0].score}
                   initial={{ scale: 1.5, color: '#fff' }}
@@ -120,7 +119,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
               </div>
             </div>
             <div className="mt-4 flex justify-between items-center border-t border-[#fabd04]/10 pt-4">
-              <span className="text-xs font-sans text-[#c4c6cc]">Última Ronda</span>
+              <span className="text-xs font-sans text-[#c4c6cc]">{t('lead.last')}</span>
               <span className="font-mono text-[#fabd04] font-bold">
                 {results.find(r => r.playerId === sortedPlayers[0].id)?.scoreChange > 0 ? '+' : ''}
                 {results.find(r => r.playerId === sortedPlayers[0].id)?.scoreChange || 0}
@@ -133,9 +132,6 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
         {sortedPlayers[1] && (
           <div className="col-span-6 bg-[#1b2b3b] rounded-xl p-4 relative overflow-hidden">
             <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full border-2 border-slate-400 overflow-hidden mb-2">
-                <img src={sortedPlayers[1].avatar} alt="Avatar" className="w-full h-full object-cover" />
-              </div>
               <span className="font-serif text-slate-300 text-2xl italic">2nd</span>
               <h3 className="font-serif text-lg text-[#d3e4fa] leading-tight">{sortedPlayers[1].name}</h3>
               <div className="mt-2">
@@ -165,9 +161,6 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
         {sortedPlayers[2] && (
           <div className="col-span-6 bg-[#1b2b3b] rounded-xl p-4 relative overflow-hidden">
             <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden mb-2">
-                <img src={sortedPlayers[2].avatar} alt="Avatar" className="w-full h-full object-cover" />
-              </div>
               <span className="font-serif text-amber-600 text-2xl italic">3rd</span>
               <h3 className="font-serif text-lg text-[#d3e4fa] leading-tight">{sortedPlayers[2].name}</h3>
               <div className="mt-2">
@@ -195,7 +188,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
       </section>
 
       <div className="space-y-3">
-        <h4 className="font-serif text-xl text-[#f0bd8b] ml-2 mb-4 italic">Clasificación de la Flota</h4>
+        <h4 className="font-serif text-xl text-[#f0bd8b] ml-2 mb-4 italic">{t('lead.fleet')}</h4>
         
         {sortedPlayers.slice(3).map((player, index) => {
           const result = results.find(r => r.playerId === player.id);
@@ -210,13 +203,10 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
             >
               <div className="flex items-center gap-4">
                 <span className="font-mono text-[#c4c6cc] w-6 text-center">{index + 4}</span>
-                <div className="w-10 h-10 rounded-md overflow-hidden bg-[#263647]">
-                  <img src={player.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                </div>
                 <div>
                   <p className="font-sans font-semibold text-[#d3e4fa]">{player.name}</p>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-[#c4c6cc] uppercase tracking-widest">Last:</span>
+                    <span className="text-[10px] font-mono text-[#c4c6cc] uppercase tracking-widest">{t('lead.last')}</span>
                     <span className={`text-[10px] font-mono font-bold ${result?.scoreChange > 0 ? 'text-[#fabd04]' : result?.scoreChange < 0 ? 'text-[#ffb3ae]' : 'text-[#c4c6cc]'}`}>
                       {result?.scoreChange > 0 ? '+' : ''}{result?.scoreChange || 0}
                     </span>
@@ -250,7 +240,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
             disabled={isSubmitting}
             className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] py-4 rounded-xl font-serif font-bold text-lg shadow-xl active:scale-95 transition-transform disabled:opacity-50"
           >
-            {isSubmitting ? 'Preparando...' : (room.currentRound < 10 ? 'Siguiente Ronda' : 'Finalizar Partida')}
+            {isSubmitting ? t('lead.preparing') : (room.currentRound < 10 ? t('lead.next') : t('lead.finish'))}
           </button>
         </div>
       )}

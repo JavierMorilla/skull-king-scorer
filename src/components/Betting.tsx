@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Room, Player, Bid } from '../types';
 import { submitBid, transitionToResults, toggleBidHighlight } from '../services/gameService';
 import { auth } from '../firebase';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BettingProps {
   room: Room;
@@ -12,6 +13,7 @@ interface BettingProps {
 }
 
 export default function Betting({ room, players, bids }: BettingProps) {
+  const { t } = useLanguage();
   const [selectedBid, setSelectedBid] = useState<number | null>(null);
   const [extraBet, setExtraBet] = useState<number>(0);
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ export default function Betting({ room, players, bids }: BettingProps) {
         await submitBid(room.id, room.currentRound, selectedBid, extraBet);
       } catch (error) {
         console.error(error);
-        alert('Error al enviar apuesta');
+        alert(t('bet.error'));
       }
       setLoading(false);
       setIsAnimatingConfirm(false);
@@ -79,22 +81,22 @@ export default function Betting({ room, players, bids }: BettingProps) {
           >
             <span className="material-symbols-outlined text-[#fabd04] text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
           </motion.div>
-          <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Apuestas Reveladas</h2>
-          <p className="text-[#f0bd8b]/80 font-sans mb-6">¡Todos han apostado! Esta es la predicción de la tripulación:</p>
+          <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">{t('bet.revealedTitle')}</h2>
+          <p className="text-[#f0bd8b]/80 font-sans mb-6">{t('bet.revealedSub')}</p>
           
           {dealer && startingPlayer && (
             <div className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
                 <span className="font-sans text-[#d3e4fa] text-sm">
-                  Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
+                  {t('bet.dealer')}: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
                 </span>
               </div>
               <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
                 <span className="font-sans text-[#d3e4fa] text-sm">
-                  Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
+                  {t('bet.starts')}: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
                 </span>
               </div>
             </div>
@@ -130,10 +132,10 @@ export default function Betting({ room, players, bids }: BettingProps) {
               onClick={handleNextPhase}
               className="mt-10 w-full max-w-xs bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] py-4 rounded-xl font-serif font-bold text-lg shadow-xl active:scale-95 transition-transform"
             >
-              Comenzar Ronda
+              {t('bet.btnStartRound')}
             </motion.button>
           ) : (
-            <p className="mt-10 text-[#f0bd8b]/60 font-mono text-sm uppercase tracking-widest animate-pulse">Esperando al capitán...</p>
+            <p className="mt-10 text-[#f0bd8b]/60 font-mono text-sm uppercase tracking-widest animate-pulse">{t('bet.waitCaptain')}</p>
           )}
         </motion.div>
       );
@@ -154,22 +156,22 @@ export default function Betting({ room, players, bids }: BettingProps) {
         >
           <span className="material-symbols-outlined text-[#fabd04] text-6xl">hourglass_empty</span>
         </motion.div>
-        <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">Apuesta Registrada</h2>
-        <p className="text-[#f0bd8b]/80 font-sans mb-6">Esperando a que el resto de la tripulación apueste...</p>
+        <h2 className="font-serif text-3xl font-bold text-[#d3e4fa] mb-2">{t('bet.registeredTitle')}</h2>
+        <p className="text-[#f0bd8b]/80 font-sans mb-6">{t('bet.registeredSub')}</p>
 
         {dealer && startingPlayer && (
           <div className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
               <span className="font-sans text-[#d3e4fa] text-sm">
-                Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
+                {t('bet.dealer')}: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
               </span>
             </div>
             <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
               <span className="font-sans text-[#d3e4fa] text-sm">
-                Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
+                {t('bet.starts')}: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
               </span>
             </div>
           </div>
@@ -213,14 +215,14 @@ export default function Betting({ room, players, bids }: BettingProps) {
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#f0bd8b]/80 text-xl">menu_book</span>
             <span className="font-sans text-[#d3e4fa] text-sm">
-              Reparte: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
+              {t('bet.dealer')}: <strong className="text-[#f0bd8b]">{dealer.name}</strong>
             </span>
           </div>
           <div className="hidden sm:block w-px h-4 bg-[#263647]"></div>
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-[#fabd04] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
             <span className="font-sans text-[#d3e4fa] text-sm">
-              Inicia: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
+              {t('bet.starts')}: <strong className="text-[#fabd04]">{startingPlayer.name}</strong>
             </span>
           </div>
         </div>
@@ -230,8 +232,8 @@ export default function Betting({ room, players, bids }: BettingProps) {
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-5 pointer-events-none select-none">
           <span className="material-symbols-outlined text-[10rem]" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
         </div>
-        <p className="font-serif italic text-[#f0bd8b] text-lg mb-1">Fase: Apuestas</p>
-        <h2 className="font-serif font-bold text-4xl text-[#d3e4fa] tracking-tight">Ronda {room.currentRound}/10</h2>
+        <p className="font-serif italic text-[#f0bd8b] text-lg mb-1">{t('bet.phase')}</p>
+        <h2 className="font-serif font-bold text-4xl text-[#d3e4fa] tracking-tight">{t('bet.round', { num: room.currentRound })}</h2>
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#fabd04] to-transparent mx-auto mt-4 rounded-full"></div>
       </section>
 
@@ -239,12 +241,12 @@ export default function Betting({ room, players, bids }: BettingProps) {
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <span className="material-symbols-outlined text-5xl">person</span>
         </div>
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#c4c6cc] mb-2">Jugador Actual</p>
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#c4c6cc] mb-2">{t('bet.currentPlayer')}</p>
         <h3 className="font-serif text-2xl font-bold text-[#fabd04] italic">{currentPlayer?.name}</h3>
       </div>
 
       <div className="space-y-4">
-        <label className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] ml-1">Elige tu apuesta</label>
+        <label className="font-mono text-xs uppercase tracking-widest text-[#f0bd8b] ml-1">{t('bet.choose')}</label>
         <div className="grid grid-cols-4 sm:grid-cols-4 gap-3">
           {Array.from({ length: room.currentRound + 1 }, (_, i) => i).map(num => (
             <motion.button 
@@ -280,8 +282,8 @@ export default function Betting({ room, players, bids }: BettingProps) {
           <div className="flex items-center gap-3 mb-3">
             <span className="material-symbols-outlined text-[#fabd04] text-2xl">casino</span>
             <div className="text-left">
-              <span className="font-sans font-bold text-[#d3e4fa] block">Apuesta Extra (Rascal)</span>
-              <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">Arriesga puntos adicionales</span>
+              <span className="font-sans font-bold text-[#d3e4fa] block">{t('rules.extraBet')}</span>
+              <span className="font-mono text-[10px] text-[#c4c6cc] uppercase tracking-wider">{t('rules.extraBetDesc')}</span>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -295,7 +297,7 @@ export default function Betting({ room, players, bids }: BettingProps) {
                     : 'bg-[#0c1d2c] text-[#d3e4fa] hover:bg-[#263647]'
                 }`}
               >
-                {val === 0 ? 'Nada' : `±${val}`}
+                {val === 0 ? t('bet.nothing') : `±${val}`}
               </button>
             ))}
           </div>
@@ -308,18 +310,18 @@ export default function Betting({ room, players, bids }: BettingProps) {
           disabled={selectedBid === null || loading}
           className="w-full bg-gradient-to-r from-[#fabd04] to-[#b68900] py-5 rounded-xl flex items-center justify-center gap-3 active:scale-[0.96] transition-transform shadow-xl disabled:opacity-50"
         >
-          <span className="font-mono text-[#261a00] font-bold text-lg uppercase tracking-widest">Confirmar Apuesta</span>
+          <span className="font-mono text-[#261a00] font-bold text-lg uppercase tracking-widest">{t('bet.confirm')}</span>
           <span className="material-symbols-outlined text-[#261a00] text-2xl">check_circle</span>
         </button>
       </div>
 
       <div className="mt-10 grid grid-cols-2 gap-4">
         <div className="bg-[#0c1d2c] p-4 rounded-xl">
-          <p className="font-mono text-[10px] uppercase text-[#c4c6cc] mb-1">Puntos Posibles</p>
+          <p className="font-mono text-[10px] uppercase text-[#c4c6cc] mb-1">{t('bet.possible')}</p>
           <p className="font-mono text-xl text-[#fabd04]">+{totalPossibleScore}</p>
         </div>
         <div className="bg-[#0c1d2c] p-4 rounded-xl">
-          <p className="font-mono text-[10px] uppercase text-[#c4c6cc] mb-1">Penalización Máx</p>
+          <p className="font-mono text-[10px] uppercase text-[#c4c6cc] mb-1">{t('bet.penalty')}</p>
           <p className="font-mono text-xl text-[#ffb3ae]">-{totalMaxPenalty}</p>
         </div>
       </div>
