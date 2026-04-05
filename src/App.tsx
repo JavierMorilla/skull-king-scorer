@@ -15,7 +15,7 @@ import ConfirmModal from './components/ConfirmModal';
 import Loader from './components/Loader';
 import ScoresModal from './components/ScoresModal';
 import LocalGame from './components/LocalGame';
-import LanguageSelector from './components/LanguageSelector';
+import SideMenu from './components/SideMenu';
 
 export default function App() {
   const { t, language, setLanguage } = useLanguage();
@@ -125,7 +125,7 @@ export default function App() {
     return (
       <div className="relative">
         <div className="absolute top-4 right-4 z-50">
-          <LanguageSelector />
+          <SideMenu />
         </div>
         <JoinCreate onJoin={setRoomId} />
       </div>
@@ -160,21 +160,11 @@ export default function App() {
     <div className="bg-[#041424] text-[#d3e4fa] font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-[#fabd04]/30">
       <header className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>anchor</span>
-          <h1 className="text-2xl font-serif italic font-bold text-[#fabd04]">{t('app.title')}</h1>
+          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+          <h1 className="text-2xl font-serif font-bold text-[#fabd04]">{t('app.title')}</h1>
         </div>
         <div className="flex items-center gap-3">
-          <LanguageSelector />
-          <div className="font-mono text-sm text-[#fabd04] bg-[#1b2b3b] px-3 py-1 rounded-full border border-[#fabd04]/10 tracking-widest [font-variant-numeric:slashed-zero]">
-            #{roomId}
-          </div>
-          <button 
-            onClick={() => setShowLeaveConfirm(true)}
-            className="text-[#ffb3ae] hover:bg-[#ffb3ae]/10 p-2 rounded-full transition-colors flex items-center justify-center"
-            title={t('app.leaveRoom')}
-          >
-            <span className="material-symbols-outlined">logout</span>
-          </button>
+          <SideMenu roomId={roomId} onLeave={() => setShowLeaveConfirm(true)} />
         </div>
       </header>
 
@@ -187,18 +177,22 @@ export default function App() {
 
       {/* Bottom Navigation */}
       {room.status !== 'LOBBY' && (
-        <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#041424]/80 backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,15,30,0.5)]">
-          <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
+        <nav key={room.status} className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-2 bg-[#041424] shadow-[0_-10px_30px_rgba(0,15,30,0.8)] border-t border-[#1b2b3b]/80">
+          <div 
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60'}`}
+          >
             <span className="material-symbols-outlined mb-1">edit_note</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.bets')}</span>
           </div>
-          <div className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'RESULTS' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60'}`}>
+          <div 
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'RESULTS' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60'}`}
+          >
             <span className="material-symbols-outlined mb-1">equalizer</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.results')}</span>
           </div>
           <div 
             onClick={() => room.status !== 'LEADERBOARD' && setShowScoresModal(true)}
-            className={`flex flex-col items-center justify-center px-4 py-1.5 transition-all ${room.status === 'LEADERBOARD' ? 'bg-[#1b2b3b] text-[#fabd04] rounded-xl' : 'text-[#f0bd8b]/60 cursor-pointer hover:text-[#f0bd8b] active:scale-95'}`}
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'LEADERBOARD' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60 cursor-pointer active:scale-95'}`}
           >
             <span className="material-symbols-outlined mb-1">military_tech</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.leaderboard')}</span>

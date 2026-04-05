@@ -5,7 +5,7 @@ import LocalBetting from './LocalBetting';
 import LocalResults from './LocalResults';
 import LocalLeaderboard from './LocalLeaderboard';
 import ConfirmModal from './ConfirmModal';
-import LanguageSelector from './LanguageSelector';
+import SideMenu from './SideMenu';
 
 interface LocalGameProps {
   onLeave: () => void;
@@ -22,20 +22,52 @@ export default function LocalGame({ onLeave }: LocalGameProps) {
   const [bids, setBids] = useState<Bid[]>([]);
   const [results, setResults] = useState<Result[]>([]);
 
+  const saveGameState = (
+    currentPlayers: Player[], 
+    round: number, 
+    gameStatus: 'BETTING' | 'RESULTS' | 'LEADERBOARD',
+    currentBids: Bid[],
+    currentResults: Result[],
+    currentSettings: RoomSettings
+  ) => {
+    const stateToSave = {
+      players: currentPlayers.map(p => p.name),
+      fullPlayers: currentPlayers,
+      settings: currentSettings,
+      currentRound: round,
+      status: gameStatus,
+      bids: currentBids,
+      results: currentResults
+    };
+    localStorage.setItem('skullking_local_setup', JSON.stringify(stateToSave));
+  };
+
   useEffect(() => {
     const setupData = localStorage.getItem('skullking_local_setup');
     if (setupData) {
       try {
-        const { players: playerNames, settings: savedSettings } = JSON.parse(setupData);
-        const initialPlayers: Player[] = playerNames.map((name: string, index: number) => ({
-          id: `local_p${index}`,
-          name,
-          score: 0,
-          isHost: index === 0,
-          joinedAt: null
-        }));
-        setPlayers(initialPlayers);
-        setSettings(savedSettings);
+        const parsedData = JSON.parse(setupData);
+        
+        if (parsedData.fullPlayers) {
+          setPlayers(parsedData.fullPlayers);
+          setSettings(parsedData.settings);
+          setCurrentRound(parsedData.currentRound || 1);
+          setStatus(parsedData.status || 'BETTING');
+          setBids(parsedData.bids || []);
+          setResults(parsedData.results || []);
+        } else {
+          const { players: playerNames, settings: savedSettings } = parsedData;
+          const initialPlayers: Player[] = playerNames.map((name: string, index: number) => ({
+            id: `local_p${index}`,
+            name,
+            score: 0,
+            isHost: index === 0,
+            joinedAt: null
+          }));
+          setPlayers(initialPlayers);
+          setSettings(savedSettings);
+          saveGameState(initialPlayers, 1, 'BETTING', [], [], savedSettings);
+        }
       } catch (e) {
         console.error("Failed to parse local setup", e);
         onLeave();
@@ -55,20 +87,24 @@ export default function LocalGame({ onLeave }: LocalGameProps) {
   const handleBidsComplete = (newBids: Bid[]) => {
     setBids(newBids);
     setStatus('RESULTS');
+    saveGameState(players, currentRound, 'RESULTS', newBids, results, settings);
   };
 
   const handleResultsComplete = (newResults: Result[], updatedPlayers: Player[]) => {
     setResults(newResults);
     setPlayers(updatedPlayers);
     setStatus('LEADERBOARD');
+    saveGameState(updatedPlayers, currentRound, 'LEADERBOARD', bids, newResults, settings);
   };
 
   const handleNextRound = () => {
     if (currentRound < 10) {
-      setCurrentRound(currentRound + 1);
+      const nextRound = currentRound + 1;
+      setCurrentRound(nextRound);
       setBids([]);
       setResults([]);
       setStatus('BETTING');
+      saveGameState(players, nextRound, 'BETTING', [], [], settings);
     } else {
       // Game over logic, maybe stay on leaderboard or show final screen
     }
@@ -78,18 +114,11 @@ export default function LocalGame({ onLeave }: LocalGameProps) {
     <div className="bg-[#041424] text-[#d3e4fa] font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-[#fabd04]/30">
       <header className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>devices</span>
-          <h1 className="text-2xl font-serif italic font-bold text-[#fabd04]">{t('join.localMode')}</h1>
+          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+          <h1 className="text-2xl font-serif font-bold text-[#fabd04]">{t('join.localMode')}</h1>
         </div>
         <div className="flex items-center gap-3">
-          <LanguageSelector />
-          <button 
-            onClick={() => setShowLeaveConfirm(true)}
-            className="text-[#ffb3ae] hover:bg-[#ffb3ae]/10 p-2 rounded-full transition-colors flex items-center justify-center"
-            title={t('app.leaveRoom')}
-          >
-            <span className="material-symbols-outlined">logout</span>
-          </button>
+          <SideMenu isLocalMode={true} onLeave={() => setShowLeaveConfirm(true)} />
         </div>
       </header>
 

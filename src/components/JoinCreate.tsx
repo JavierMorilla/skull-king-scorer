@@ -184,7 +184,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
               </button>
               
               {showSettings && (
-                <div className="grid grid-cols-1 gap-3 mt-4">
+                <div className="grid grid-cols-2 gap-3 mt-4">
                   {[
                     { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-[#ffb3ae]', bg: 'bg-[#ffb3ae]/10', border: 'border-[#ffb3ae]', switchBg: 'bg-[#ffb3ae]' },
                     { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-[#d3e4fa]', bg: 'bg-[#d3e4fa]/10', border: 'border-[#d3e4fa]', switchBg: 'bg-[#d3e4fa]' },
@@ -195,28 +195,28 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                   ].map((option) => {
                     const isEnabled = settings[option.id as keyof typeof settings];
                     return (
-                      <div 
+                      <div
                         key={option.id}
                         onClick={() => setSettings(s => ({ ...s, [option.id]: !isEnabled }))}
-                        className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${isEnabled ? `${option.bg} ${option.border}` : 'bg-[#041424]/50 border-transparent hover:bg-[#041424]'}`}
+                        className={`relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col gap-2 overflow-hidden group ${
+                          isEnabled
+                            ? `bg-[#263647] ${option.border} shadow-[0_0_15px_rgba(0,0,0,0.2)]`
+                            : 'bg-[#0c1d2c] border-transparent hover:border-[#44474c]'
+                        }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isEnabled ? option.bg : 'bg-[#1b2b3b]'}`}>
-                            {option.iconType === 'emoji' ? (
-                              <span className="text-lg">{option.icon}</span>
-                            ) : option.iconType === 'material' ? (
-                              <span className={`material-symbols-outlined text-lg ${isEnabled ? option.color : 'text-[#c4c6cc]/50'}`}>{option.icon}</span>
-                            ) : (
-                              <span className={`font-mono font-bold text-sm ${isEnabled ? option.color : 'text-[#c4c6cc]/50'}`}>{option.icon}</span>
-                            )}
+                        <div className="flex justify-between items-start">
+                          <div className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${isEnabled ? `${option.bg} ${option.color}` : 'bg-[#1b2b3b] text-[#c4c6cc]'}`}>
+                            {option.iconType === 'material' && <span className="material-symbols-outlined text-xl">{option.icon as string}</span>}
+                            {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon as string}</span>}
+                            {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon as string}</span>}
                           </div>
-                          <div>
-                            <p className={`font-sans font-bold text-sm ${isEnabled ? option.color : 'text-[#c4c6cc]'}`}>{option.title}</p>
-                            <p className="font-mono text-[10px] text-[#c4c6cc]/60 leading-tight mt-0.5">{option.desc}</p>
+                          <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-[#102130] border border-[#44474c]'}`}>
+                            <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
                           </div>
                         </div>
-                        <div className={`w-10 h-6 rounded-full p-1 transition-colors ${isEnabled ? option.switchBg : 'bg-[#263647]'}`}>
-                          <div className={`w-4 h-4 rounded-full bg-[#041424] transition-transform ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
+                        <div className="mt-1">
+                          <h4 className={`font-sans font-bold text-sm transition-colors ${isEnabled ? 'text-[#d3e4fa]' : 'text-[#c4c6cc] group-hover:text-[#d3e4fa]'}`}>{option.title}</h4>
+                          <p className="font-mono text-[9px] text-[#c4c6cc]/60 mt-0.5 leading-tight uppercase tracking-wider">{option.desc}</p>
                         </div>
                       </div>
                     );

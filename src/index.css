@@ -1,40 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Roboto", sans-serif;
-  
-  /* Material Design 3 Dark Theme Tokens (Amber/Gold based) */
-  --color-primary: #E8C468;
-  --color-on-primary: #3E2E00;
-  --color-primary-container: #584400;
-  --color-on-primary-container: #FFE082;
-  
-  --color-secondary: #D0C4B4;
-  --color-on-secondary: #362F22;
-  --color-secondary-container: #4D4537;
-  --color-on-secondary-container: #ECE0CF;
-  
-  --color-tertiary: #A8CDE0;
-  --color-on-tertiary: #0D3445;
-  --color-tertiary-container: #274B5D;
-  --color-on-tertiary-container: #C4E9FD;
-  
-  --color-error: #FFB4AB;
-  --color-on-error: #690005;
-  --color-error-container: #93000A;
-  --color-on-error-container: #FFDAD6;
-  
-  --color-surface: #141311;
-  --color-on-surface: #E6E2DE;
-  --color-on-surface-variant: #CAC5BD;
-  --color-outline: #949089;
-  --color-outline-variant: #494640;
-  
-  --color-surface-container-lowest: #0F0E0C;
-  --color-surface-container-low: #1C1B19;
-  --color-surface-container: #201F1D;
-  --color-surface-container-high: #2B2A28;
-  --color-surface-container-highest: #363432;
+  --font-serif: "Manrope", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 .material-symbols-outlined {

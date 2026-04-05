@@ -28,7 +28,7 @@ export default function LocalBetting({ players, currentRound, onComplete }: Loca
   const handleBet = () => {
     if (currentBet === null) return;
 
-    const newBids = [...bids, { playerId: currentPlayer.id, bet: currentBet }];
+    const newBids: Bid[] = [...bids, { playerId: currentPlayer.id, bid: currentBet, extraBet: 0 }];
     setBids(newBids);
     setCurrentBet(null);
 
@@ -76,7 +76,7 @@ export default function LocalBetting({ players, currentRound, onComplete }: Loca
           
           <div className="grid grid-cols-2 gap-4 mb-8">
             {players.map(p => {
-              const pBid = bids.find(b => b.playerId === p.id)?.bet;
+              const pBid = bids.find(b => b.playerId === p.id)?.bid;
               return (
                 <div key={p.id} className="bg-[#1b2b3b] p-4 rounded-xl border border-[#44474c]/30 flex flex-col items-center">
                   <span className="font-sans font-bold text-[#d3e4fa] mb-2 truncate w-full">{p.name}</span>

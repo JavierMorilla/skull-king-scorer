@@ -215,7 +215,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
                   setBonus14sBlack(false);
                 }
               }}
-              className="w-14 h-14 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04] hover:bg-[#fabd04] hover:text-[#3f2e00] transition-all active:scale-95 duration-150"
+              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-150 ${tricks <= 0 ? 'bg-[#1b2b3b] text-[#c4c6cc]/30 cursor-not-allowed' : 'bg-[#263647] text-[#fabd04] hover:bg-[#fabd04] hover:text-[#3f2e00] active:scale-95'}`}
+              disabled={tricks <= 0}
             >
               <span className="material-symbols-outlined text-3xl">remove</span>
             </button>
@@ -224,7 +225,8 @@ export default function Results({ room, players, bids, results }: ResultsProps) 
             </div>
             <button 
               onClick={() => setTricks(Math.min(room.currentRound, tricks + 1))}
-              className="w-14 h-14 rounded-full bg-[#263647] flex items-center justify-center text-[#fabd04] hover:bg-[#fabd04] hover:text-[#3f2e00] transition-all active:scale-95 duration-150"
+              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-150 ${tricks >= room.currentRound ? 'bg-[#1b2b3b] text-[#c4c6cc]/30 cursor-not-allowed' : 'bg-[#263647] text-[#fabd04] hover:bg-[#fabd04] hover:text-[#3f2e00] active:scale-95'}`}
+              disabled={tricks >= room.currentRound}
             >
               <span className="material-symbols-outlined text-3xl">add</span>
             </button>
