@@ -24,6 +24,7 @@ interface ResultsProps {
         bonus14sBlack: boolean,
         krakenUsed: boolean,
         whiteWhaleUsed: boolean,
+        whiteWhaleDestroyedTrick: boolean,
         lootAlliance: string | null
   ) => Promise<void>;
   onDeleteResult?: () => Promise<void>;
