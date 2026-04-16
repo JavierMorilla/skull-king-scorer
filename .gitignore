@@ -7,8 +7,6 @@ coverage/
 .env*
 !.env.example
 firebase-applet-config.json
-README.md
-README
 
 # IDEs
 .vscode/
