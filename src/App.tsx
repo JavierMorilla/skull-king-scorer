@@ -4,6 +4,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, collection, onSnapshot } from 'firebase/firestore';
 import { AnimatePresence } from 'motion/react';
 import { KeepAwake } from '@capacitor-community/keep-awake';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationBar } from '@capgo/capacitor-navigation-bar';
 import { Room, Player, Bid, Result } from './types';
 import { leaveRoom } from './services/gameService';
 import { useLanguage } from './i18n/LanguageContext';
@@ -36,6 +38,27 @@ export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [bids, setBids] = useState<Bid[]>([]);
   const [results, setResults] = useState<Result[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect if we are on Capacitor (mobile)
+    const initUI = async () => {
+      try {
+        // Set Status Bar to matching app background
+        await StatusBar.setBackgroundColor({ color: '#041424' });
+        await StatusBar.setStyle({ style: Style.Dark }); // White icons
+        
+        // Set Navigation Bar to matching app background
+        await NavigationBar.set({ color: '#041424' });
+        
+        setIsMobile(true);
+      } catch (e) {
+        // Not on a mobile device or plugin not available
+        setIsMobile(false);
+      }
+    };
+    initUI();
+  }, []);
 
   useEffect(() => {
     // Check for direct /privacy URL
@@ -213,7 +236,10 @@ export default function App() {
 
   return (
     <div className="bg-[#041424] text-[#d3e4fa] font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-[#fabd04]/30">
-      <header className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
+      <header 
+        style={{ paddingTop: 'calc(1rem + var(--safe-area-top))' }}
+        className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 pb-4 fixed top-0 z-50 transition-[padding] duration-300"
+      >
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
           <h1 className="text-2xl font-serif font-bold text-[#fabd04]">{t('app.title')}</h1>
@@ -239,7 +265,11 @@ export default function App() {
 
       {/* Bottom Navigation */}
       {room.status !== 'LOBBY' && (
-        <nav key={room.status} className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-2 bg-[#041424] shadow-[0_-10px_30px_rgba(0,15,30,0.8)] border-t border-[#1b2b3b]/80">
+        <nav 
+          key={room.status} 
+          style={{ paddingBottom: 'calc(1.5rem + var(--safe-area-bottom))' }}
+          className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-2 bg-[#041424] shadow-[0_-10px_30px_rgba(0,15,30,0.8)] border-t border-[#1b2b3b]/80 transition-[padding] duration-300"
+        >
           <div
             className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60'}`}
           >
