@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Skull King Scorer</string>
+    <string name="title_activity_main">Skull King Scorer</string>
+    <string name="package_name">com.javiermorilla.skullking</string>
+    <string name="custom_url_scheme">com.javiermorilla.skullking</string>
+</resources>

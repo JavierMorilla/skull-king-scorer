@@ -1,0 +1,28 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+firebase-applet-config.json
+README.md
+README
+
+# IDEs
+.vscode/
+.windsurf/
+.idea/
+
+# Binarios y Compilación
+*.aab
+*.apk
+android/app/build/
+**/build/
+.gradle/
+android/local.properties
+
+# Archivos de Seguridad / Claves de Producción (¡CRÍTICO!)
+*.jks
+*.keystore
