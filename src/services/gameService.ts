@@ -229,6 +229,15 @@ export const toggleBidHighlight = async (roomId: string, roundId: number, player
   }
 };
 
+export const submitResult = async (
+  roomId: string, 
+  roundId: number, 
+  tricks: number, 
+  bonusSkullKingCaptured: boolean, 
+  bonusPiratesCaptured: number, 
+  bonusMermaidsCaptured: number,
+  bonus14sColor: number,
+  bonus14sBlack: boolean,
   krakenUsed: boolean,
   whiteWhaleUsed: boolean,
   whiteWhaleDestroyedTrick: boolean,
