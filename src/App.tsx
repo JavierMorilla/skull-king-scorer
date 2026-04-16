@@ -49,7 +49,7 @@ export default function App() {
         await StatusBar.setStyle({ style: Style.Dark }); // White icons
         
         // Set Navigation Bar to matching app background
-        await NavigationBar.setBackgroundColor({ color: '#041424' });
+        await NavigationBar.setColor({ color: '#041424' });
         
         setIsMobile(true);
       } catch (e) {
