@@ -54,6 +54,7 @@ export interface Result {
   bonus14sBlack: boolean; // (+20)
   krakenUsed: boolean;
   whiteWhaleUsed: boolean;
+  whiteWhaleDestroyedTrick: boolean;
   lootAlliance: string | null; // ID of allied player
   scoreChange: number;
 }

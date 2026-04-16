@@ -229,17 +229,9 @@ export const toggleBidHighlight = async (roomId: string, roundId: number, player
   }
 };
 
-export const submitResult = async (
-  roomId: string, 
-  roundId: number, 
-  tricks: number, 
-  bonusSkullKingCaptured: boolean, 
-  bonusPiratesCaptured: number, 
-  bonusMermaidsCaptured: number,
-  bonus14sColor: number,
-  bonus14sBlack: boolean,
   krakenUsed: boolean,
   whiteWhaleUsed: boolean,
+  whiteWhaleDestroyedTrick: boolean,
   lootAlliance: string | null
 ): Promise<void> => {
   if (!auth.currentUser) return;
@@ -256,6 +248,7 @@ export const submitResult = async (
       bonus14sBlack,
       krakenUsed,
       whiteWhaleUsed,
+      whiteWhaleDestroyedTrick,
       lootAlliance,
       scoreChange: 0 // This will be calculated globally by the host
     });
@@ -315,9 +308,11 @@ export const computeScores = (
     total14s += result.bonus14sColor + (result.bonus14sBlack ? 1 : 0);
     if (result.krakenUsed) krakenWasUsed = true;
     if (result.whiteWhaleUsed) whiteWhaleWasUsed = true;
+    if (result.whiteWhaleDestroyedTrick) whiteWhaleWasUsed = true;
   }
 
-  const expectedTricks = krakenWasUsed ? roundId - 1 : roundId;
+  const whaleDestruction = results.some(r => r.whiteWhaleDestroyedTrick) ? 1 : 0;
+  const expectedTricks = roundId - (krakenWasUsed ? 1 : 0) - whaleDestruction;
 
   if (totalTricks !== expectedTricks) {
     throw new Error(`ERROR_TRICKS_MISMATCH|${totalTricks}|${expectedTricks}`);

@@ -36,6 +36,7 @@ export default function LocalResults({ players, currentRound, bids, settings, on
         bonus14sBlack: boolean,
         krakenUsed: boolean,
         whiteWhaleUsed: boolean,
+        whiteWhaleDestroyedTrick: boolean,
         lootAlliance: string | null
   ) => {
     const newResult: Result = {
@@ -48,6 +49,7 @@ export default function LocalResults({ players, currentRound, bids, settings, on
       bonus14sBlack,
       krakenUsed,
       whiteWhaleUsed,
+      whiteWhaleDestroyedTrick,
       lootAlliance,
       scoreChange: 0
     };

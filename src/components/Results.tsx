@@ -118,6 +118,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
   const [bonus14sBlack, setBonus14sBlack] = useState(false);
   const [krakenUsed, setKrakenUsed] = useState(false);
   const [whiteWhaleUsed, setWhiteWhaleUsed] = useState(false);
+  const [whiteWhaleDestroyedTrick, setWhiteWhaleDestroyedTrick] = useState(false);
   const [lootAlliance, setLootAlliance] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showBidsModal, setShowBidsModal] = useState(false);
@@ -150,6 +151,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
         tricks > 0 ? bonus14sBlack : false,
         krakenUsed,
         whiteWhaleUsed,
+        whiteWhaleDestroyedTrick,
         lootAlliance
       ] as const;
 
@@ -164,7 +166,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
       alert(t('res.errorSubmit'));
     }
     setLoading(false);
-  }, [tricks, bonusSkullKingCaptured, bonusPiratesCaptured, bonusMermaidsCaptured, bonus14sColor, bonus14sBlack, krakenUsed, whiteWhaleUsed, lootAlliance, onSubmitResult, room.id, room.currentRound, t]);
+  }, [tricks, bonusSkullKingCaptured, bonusPiratesCaptured, bonusMermaidsCaptured, bonus14sColor, bonus14sBlack, krakenUsed, whiteWhaleUsed, whiteWhaleDestroyedTrick, lootAlliance, onSubmitResult, room.id, room.currentRound, t]);
 
   const handleDeleteResult = useCallback(async () => {
     setLoading(true);
@@ -344,7 +346,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
 
         {room.settings?.whiteWhaleEnabled && (
           <div className="mb-6 bg-[#0c1d2c] p-4 rounded-xl border border-[#d3e4fa]/20 relative z-10 space-y-4">
-            <label className="flex items-center justify-between cursor-pointer group">
+            <div className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
                 <span className="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">🐋</span>
                 <div className="text-left">
@@ -355,13 +357,40 @@ export default function Results({ room, players, bids, results, currentPlayerId,
               <Switch 
                 checked={whiteWhaleUsed} 
                 ariaLabel={t('res.whaleTitle')}
-                onChange={(c) => {
-                  Haptics.impact({ style: ImpactStyle.Heavy }).catch(() => {});
-                  setWhiteWhaleUsed(c);
+                onChange={(checked) => {
+                  setWhiteWhaleUsed(checked);
+                  if (!checked) setWhiteWhaleDestroyedTrick(false);
+                  Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
                 }} 
                 colorClass="bg-[#d3e4fa]"
               />
-            </label>
+            </div>
+            
+            <AnimatePresence>
+              {whiteWhaleUsed && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                    <div>
+                      <p className="text-white font-medium">{t('res.whaleDestroyedTitle')}</p>
+                      <p className="text-white/50 text-xs">{t('res.whaleDestroyedSub')}</p>
+                    </div>
+                    <Switch 
+                      checked={whiteWhaleDestroyedTrick} 
+                      onChange={(checked) => {
+                        setWhiteWhaleDestroyedTrick(checked);
+                        Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
+                      }} 
+                      colorClass="bg-[#d3e4fa]"
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
 
