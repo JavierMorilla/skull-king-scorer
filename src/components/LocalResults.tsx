@@ -5,6 +5,7 @@ import { Player, Bid, Result, RoomSettings, Room } from '../types';
 import { computeScores } from '../services/gameService';
 import Results from './Results';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { track } from '@vercel/analytics';
 
 interface LocalResultsProps {
   players: Player[];
@@ -75,6 +76,7 @@ export default function LocalResults({ players, currentRound, bids, settings, on
         }));
 
         setResults(newResults);
+        track('local_round_completed', { round: currentRound, playersCount: players.length });
         onComplete(finalResults, updatedPlayers);
       } catch (error: any) {
         alert("🚨 " + t('res.errorCalc') + "\n\n" + error.message);

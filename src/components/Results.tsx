@@ -6,6 +6,7 @@ import { auth, db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { track } from '@vercel/analytics';
 
 interface ResultsProps {
   room: Room;
@@ -157,6 +158,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
       } else {
         await submitResult(room.id, room.currentRound, ...resultData);
       }
+      track('online_round_submitted', { round: room.currentRound });
     } catch (error) {
       console.error(error);
       alert(t('res.errorSubmit'));
