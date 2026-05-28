@@ -126,9 +126,10 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
                 
                 <div className="relative group">
                   <a
-                    href="#"
-                    className="block w-full transition-transform hover:scale-[1.02] active:scale-[0.98] opacity-60 cursor-not-allowed"
-                    onClick={(e) => e.preventDefault()}
+                    href="https://play.google.com/store/apps/details?id=com.javiermorilla.skullking"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full transition-transform hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <svg viewBox="0 0 135 40" className="w-full h-auto drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
                       <defs>
@@ -173,9 +174,6 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
                       </g>
                     </svg>
                   </a>
-                  <span className="absolute -top-2 -right-2 bg-[#fabd04] text-[#041424] text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-lg uppercase tracking-tighter">
-                    {t('app.soon')}
-                  </span>
                 </div>
 
                 <button
