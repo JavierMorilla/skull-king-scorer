@@ -34,7 +34,7 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#041424]/80 backdrop-blur-sm"
+          className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-abyssal-deep/80 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
@@ -42,13 +42,14 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#1b2b3b] rounded-2xl p-6 w-full max-w-md shadow-2xl border border-[#263647]"
+            className="bg-cabin-slate rounded-2xl p-6 w-full max-w-md shadow-2xl border border-cabin-slate"
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-serif text-2xl text-[#d3e4fa]">{t('score.title')}</h2>
+              <h2 className="font-display text-2xl text-ice font-bold">{t('score.title')}</h2>
               <button
                 onClick={onClose}
-                className="text-[#f0bd8b]/60 hover:text-[#f0bd8b] transition-colors"
+                className="text-apricot/60 hover:text-apricot p-2 w-11 h-11 flex items-center justify-center rounded-full hover:bg-abyssal-deep/50 transition-colors"
+                aria-label={t('app.close')}
               >
                 <span className="material-symbols-outlined text-2xl">close</span>
               </button>
@@ -58,30 +59,30 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
               {sortedPlayers.map((player, index) => (
                 <div
                   key={player.id}
-                  className="flex items-center justify-between bg-[#041424]/50 p-3 rounded-xl border border-[#263647]/50"
+                  className="flex items-center justify-between bg-dark-void/50 p-3 rounded-xl border border-cabin-slate/50"
                 >
                   <div className="flex items-center gap-3">
                     <div>
-                      <div className="font-sans text-[#d3e4fa] font-medium flex items-center gap-2">
+                      <div className="font-sans text-ice font-medium flex items-center gap-2">
                         {player.name}
                         {player.id === room.hostId && (
-                          <span className="material-symbols-outlined text-[#fabd04] text-base" title={t('lobby.host')}>sailing</span>
+                           <span className="material-symbols-outlined text-gold text-base" title={t('lobby.host')}>sailing</span>
                         )}
                       </div>
-                      <div className="text-xs text-[#f0bd8b]/60 font-mono">
+                      <div className="text-xs text-apricot/60 font-mono">
                         {t('score.place', { num: index + 1 })}
                       </div>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    <div className="text-xl font-serif text-[#fabd04] font-bold">
+                    <div className="text-xl font-mono tabular-nums text-gold font-bold">
                       {player.score}
                     </div>
                     {isHost && player.id !== auth.currentUser?.uid && (
                       <button
                         onClick={() => handleKick(player.id)}
-                        className="text-red-500/70 hover:text-red-400 transition-colors p-1 rounded-lg hover:bg-red-500/10"
+                        className="text-coral/80 hover:text-coral transition-colors p-2 w-11 h-11 flex items-center justify-center rounded-xl hover:bg-coral/10"
                         title={t('lobby.kickTitle')}
                       >
                         <span className="material-symbols-outlined text-xl">person_remove</span>

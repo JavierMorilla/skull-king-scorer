@@ -181,7 +181,7 @@ export default function App() {
 
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen bg-[#041424] flex items-center justify-center">
+      <div className="min-h-screen bg-abyssal-deep flex items-center justify-center">
         <Loader />
       </div>
     );
@@ -220,7 +220,7 @@ export default function App() {
 
   if (!room && roomId && roomId !== 'LOCAL_GAME') {
     return (
-      <div className="min-h-screen bg-[#041424] flex items-center justify-center">
+      <div className="min-h-screen bg-abyssal-deep flex items-center justify-center">
         <Loader />
       </div>
     );
@@ -235,14 +235,14 @@ export default function App() {
   };
 
   return (
-    <div className="bg-[#041424] text-[#d3e4fa] font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-[#fabd04]/30">
+    <div className="bg-abyssal-deep text-ice font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-gold/30">
       <header 
         style={{ paddingTop: 'calc(1rem + var(--safe-area-top))' }}
-        className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 pb-4 fixed top-0 z-50 transition-[padding] duration-300"
+        className="bg-abyssal-deep shadow-lg shadow-dark-void/40 flex justify-between items-center w-full px-6 pb-4 fixed top-0 z-50 transition-[padding] duration-300"
       >
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
-          <h1 className="text-2xl font-serif font-bold text-[#fabd04]">{t('app.title')}</h1>
+          <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+          <h1 className="text-2xl font-display font-bold text-gold">{t('app.title')}</h1>
         </div>
         <div className="flex items-center gap-3">
           <SideMenu 
@@ -268,23 +268,23 @@ export default function App() {
         <nav 
           key={room.status} 
           style={{ paddingBottom: 'calc(1.5rem + var(--safe-area-bottom))' }}
-          className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-2 bg-[#041424] shadow-[0_-10px_30px_rgba(0,15,30,0.8)] border-t border-[#1b2b3b]/80 transition-[padding] duration-300"
+          className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-2 bg-abyssal-deep shadow-[0_-10px_30px_rgba(0,15,30,0.8)] border-t border-cabin-slate/80 transition-[padding] duration-300"
         >
           <div
-            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'BETTING' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60'}`}
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'BETTING' ? 'bg-cabin-slate text-gold shadow-inner' : 'bg-transparent text-apricot/60'}`}
           >
             <span className="material-symbols-outlined mb-1">edit_note</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.bets')}</span>
           </div>
           <div
-            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'RESULTS' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60'}`}
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'RESULTS' ? 'bg-cabin-slate text-gold shadow-inner' : 'bg-transparent text-apricot/60'}`}
           >
             <span className="material-symbols-outlined mb-1">equalizer</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.results')}</span>
           </div>
           <div
             onClick={() => room.status !== 'LEADERBOARD' && setShowScoresModal(true)}
-            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'LEADERBOARD' ? 'bg-[#1b2b3b] text-[#fabd04] shadow-inner' : 'bg-transparent text-[#f0bd8b]/60 cursor-pointer active:scale-95'}`}
+            className={`flex-1 flex flex-col items-center justify-center py-2 mx-1 rounded-xl transition-all duration-300 ${room.status === 'LEADERBOARD' ? 'bg-cabin-slate text-gold shadow-inner' : 'bg-transparent text-apricot/60 cursor-pointer active:scale-[0.97]'}`}
           >
             <span className="material-symbols-outlined mb-1">military_tech</span>
             <span className="font-mono text-[10px] uppercase tracking-tighter">{t('app.leaderboard')}</span>

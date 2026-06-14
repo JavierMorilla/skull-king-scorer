@@ -24,3 +24,7 @@ android/local.properties
 # Archivos de Seguridad / Claves de Producción (¡CRÍTICO!)
 *.jks
 *.keystore
+
+# Agent skills and Impeccable outputs
+.agents/
+.impeccable/

@@ -64,7 +64,7 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-drawer-backdrop"
           />
           <motion.div
             ref={menuRef}
@@ -72,13 +72,13 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-[100dvh] w-72 max-w-[80vw] bg-[#041424] border-l border-[#1b2b3b] shadow-2xl z-[100] flex flex-col"
+            className="fixed top-0 right-0 h-[100dvh] w-72 max-w-[80vw] bg-abyssal-deep border-l border-cabin-slate shadow-2xl z-drawer flex flex-col"
           >
-            <div className="flex justify-between items-center p-6 border-b border-[#1b2b3b]">
-              <h2 className="text-xl font-serif text-[#fabd04] font-bold">{t('app.options')}</h2>
+            <div className="flex justify-between items-center p-6 border-b border-cabin-slate">
+              <h2 className="text-xl font-display text-gold font-bold">{t('app.options')}</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-[#d3e4fa]/60 hover:text-[#d3e4fa] p-1 rounded-full transition-colors"
+                className="text-ice/60 hover:text-ice p-2 w-11 h-11 flex items-center justify-center rounded-full transition-colors"
                 aria-label={t('app.close')}
               >
                 <span className="material-symbols-outlined">close</span>
@@ -88,7 +88,7 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-8">
               {/* Language */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-bold text-[#d3e4fa]/40 uppercase tracking-wider">{t('app.language')}</h3>
+                <h3 className="text-sm font-bold text-ice/40 uppercase tracking-wider">{t('app.language')}</h3>
                 <div className="flex justify-start">
                   <LanguageSelector />
                 </div>
@@ -97,19 +97,19 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
               {/* Room Info */}
               {(roomId || isLocalMode) && (
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-bold text-[#d3e4fa]/40 uppercase tracking-wider">{t('app.room')}</h3>
+                  <h3 className="text-sm font-bold text-ice/40 uppercase tracking-wider">{t('app.room')}</h3>
                   {roomId && roomId !== 'LOCAL_GAME' && (
-                    <div className="flex items-center justify-between bg-[#1b2b3b]/50 p-3 rounded-xl border border-[#1b2b3b]">
-                      <span className="text-[#d3e4fa]/80">{t('app.code')}</span>
-                      <span className="font-mono text-[#fabd04] tracking-widest [font-variant-numeric:slashed-zero] font-bold">
+                    <div className="flex items-center justify-between bg-cabin-slate/50 p-3 rounded-xl border border-cabin-slate">
+                      <span className="text-ice/80">{t('app.code')}</span>
+                      <span className="font-mono text-gold tracking-widest [font-variant-numeric:slashed-zero] font-bold">
                         #{roomId}
                       </span>
                     </div>
                   )}
                   {isLocalMode && (
-                    <div className="flex items-center justify-between bg-[#1b2b3b]/50 p-3 rounded-xl border border-[#1b2b3b]">
-                      <span className="text-[#d3e4fa]/80">{t('app.mode')}</span>
-                      <span className="text-[#fabd04] font-bold">
+                    <div className="flex items-center justify-between bg-cabin-slate/50 p-3 rounded-xl border border-cabin-slate">
+                      <span className="text-ice/80">{t('app.mode')}</span>
+                      <span className="text-gold font-bold">
                         {t('join.localMode')}
                       </span>
                     </div>
@@ -122,7 +122,7 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
 
               {/* Get App */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-bold text-[#d3e4fa]/40 uppercase tracking-wider">{t('app.getApp')}</h3>
+                <h3 className="text-sm font-bold text-ice/40 uppercase tracking-wider">{t('app.getApp')}</h3>
                 
                 <div className="relative group">
                   <a
@@ -178,17 +178,17 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
 
                 <button
                   onClick={handleCopyUrl}
-                  className="flex items-center justify-between bg-[#1b2b3b]/50 hover:bg-[#1b2b3b] p-3 rounded-xl border border-[#1b2b3b] transition-all group w-full"
+                  className="flex items-center justify-between bg-cabin-slate/50 hover:bg-cabin-slate p-3 rounded-xl border border-cabin-slate transition-colors duration-150 group w-full min-h-11"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#c4c6cc] group-hover:text-[#d3e4fa] transition-colors">share</span>
-                    <span className="text-[#d3e4fa]/90 text-sm font-medium">{t('app.share')}</span>
+                    <span className="material-symbols-outlined text-slate-mist group-hover:text-ice transition-colors">share</span>
+                    <span className="text-ice/90 text-sm font-medium">{t('app.share')}</span>
                   </div>
                   {showCopied && (
                     <motion.span 
                       initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="text-xs font-mono text-[#fabd04] font-bold uppercase tracking-widest"
+                      className="text-xs font-mono text-gold font-bold uppercase tracking-widest"
                     >
                       {t('app.copied')}
                     </motion.span>
@@ -198,12 +198,12 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
 
               {/* Support */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-sm font-bold text-[#d3e4fa]/40 uppercase tracking-wider">{t('app.support')}</h3>
+                <h3 className="text-sm font-bold text-ice/40 uppercase tracking-wider">{t('app.support')}</h3>
                 <a
                   href="https://ko-fi.com/morigoll"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 bg-[#1b2b3b]/50 hover:bg-[#1b2b3b] p-3 rounded-xl border border-[#1b2b3b] transition-all group"
+                  className="flex items-center gap-3 bg-cabin-slate/50 hover:bg-cabin-slate p-3 rounded-xl border border-cabin-slate transition-colors duration-150 group min-h-11"
                 >
                   <div className="w-6 h-6 group-hover:scale-110 transition-transform flex items-center justify-center">
                     <svg 
@@ -243,7 +243,7 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
                       </g>
                     </svg>
                   </div>
-                  <span className="text-[#d3e4fa]/90 text-sm font-medium">{t('app.donate')}</span>
+                  <span className="text-ice/90 text-sm font-medium">{t('app.donate')}</span>
                 </a>
               </div>
 
@@ -259,23 +259,23 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
                        window.open('/privacy', '_blank');
                     }
                   }}
-                  className="flex items-center gap-3 bg-[#1b2b3b]/30 hover:bg-[#1b2b3b]/50 p-3 rounded-xl border border-[#1b2b3b] transition-all group text-left w-full"
+                  className="flex items-center gap-3 bg-cabin-slate/30 hover:bg-cabin-slate/50 p-3 rounded-xl border border-cabin-slate transition-colors duration-150 group text-left w-full min-h-11"
                 >
-                  <span className="material-symbols-outlined text-[#d3e4fa]/40 group-hover:text-[#fabd04] transition-colors">description</span>
-                  <span className="text-[#d3e4fa]/80 text-sm">{t('app.privacy')}</span>
+                  <span className="material-symbols-outlined text-ice/40 group-hover:text-gold transition-colors">description</span>
+                  <span className="text-ice/80 text-sm">{t('app.privacy')}</span>
                 </a>
               </div>
             </div>
 
             {/* Danger Zone */}
             {onLeave && (
-              <div className="p-6 border-t border-[#1b2b3b]">
+              <div className="p-6 border-t border-cabin-slate">
                 <button
                   onClick={() => {
                     setIsOpen(false);
                     onLeave();
                   }}
-                  className="w-full flex items-center justify-center gap-2 bg-[#ffb3ae]/10 hover:bg-[#ffb3ae]/20 text-[#ffb3ae] py-3 rounded-xl transition-colors font-bold"
+                  className="w-full flex items-center justify-center gap-2 bg-coral/10 hover:bg-coral/20 text-coral py-3 min-h-11 rounded-xl transition-colors font-bold"
                 >
                   <span className="material-symbols-outlined">logout</span>
                   {t('app.leaveRoom')}
@@ -292,7 +292,7 @@ export default function SideMenu({ roomId, isLocalMode, onLeave, onOpenPrivacy }
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="text-[#d3e4fa] hover:bg-[#1b2b3b] p-2 rounded-full transition-colors flex items-center justify-center"
+        className="text-ice hover:bg-cabin-slate p-2 w-11 h-11 flex items-center justify-center rounded-full transition-colors"
         aria-label={t('app.options')}
       >
         <span className="material-symbols-outlined">menu</span>

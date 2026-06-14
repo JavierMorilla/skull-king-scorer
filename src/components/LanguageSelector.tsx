@@ -61,15 +61,16 @@ export default function LanguageSelector() {
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{ duration: 0.15 }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.2 }}
           style={{
             position: 'fixed',
             top: coords.top + 8,
             left: coords.left,
             minWidth: '160px',
-            zIndex: 9999
+            zIndex: 'var(--z-dropdown)' as any,
+            transformOrigin: 'top right'
           }}
-          className="bg-[#1b2b3b] border border-[#fabd04]/30 rounded-xl shadow-2xl overflow-hidden"
+          className="bg-cabin-slate border border-gold/30 rounded-xl shadow-2xl overflow-hidden"
         >
           {languages.map((lang) => (
             <button
@@ -78,9 +79,9 @@ export default function LanguageSelector() {
                 setLanguage(lang.code as Language);
                 setIsOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${language === lang.code
-                  ? 'bg-[#fabd04]/10 text-[#fabd04]'
-                  : 'text-[#d3e4fa] hover:bg-[#263647]'
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors min-h-11 ${language === lang.code
+                  ? 'bg-gold/10 text-gold'
+                  : 'text-ice hover:bg-cabin-slate/80'
                 }`}
             >
               <img src={lang.flagUrl} alt={lang.name} className="w-5 h-auto rounded-[2px]" />
@@ -99,11 +100,11 @@ export default function LanguageSelector() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-[#1b2b3b]/80 backdrop-blur-md border border-[#fabd04]/30 px-3 py-2 rounded-xl text-[#d3e4fa] hover:bg-[#263647] transition-colors shadow-lg"
+        className="flex items-center gap-2 bg-cabin-slate/80 backdrop-blur-md border border-gold/30 px-3 py-2 min-h-11 rounded-xl text-ice hover:bg-cabin-slate transition-colors shadow-lg"
       >
         <img src={currentLang.flagUrl} alt={currentLang.name} className="w-5 h-auto rounded-[2px]" />
         <span className="font-mono text-sm font-bold uppercase tracking-wider hidden sm:block">{currentLang.code}</span>
-        <span className="material-symbols-outlined text-sm text-[#f0bd8b]/60">
+        <span className="material-symbols-outlined text-sm text-apricot/60">
           {isOpen ? 'expand_less' : 'expand_more'}
         </span>
       </button>

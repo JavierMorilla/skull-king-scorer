@@ -121,11 +121,11 @@ export default function LocalGame({ onLeave, onOpenPrivacy }: LocalGameProps) {
   };
 
   return (
-    <div className="bg-[#041424] text-[#d3e4fa] font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-[#fabd04]/30">
-      <header className="bg-[#041424] shadow-lg shadow-blue-950/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
+    <div className="bg-abyssal-deep text-ice font-sans min-h-screen flex flex-col overflow-x-hidden selection:bg-gold/30">
+      <header className="bg-abyssal-deep shadow-lg shadow-dark-void/40 flex justify-between items-center w-full px-6 py-4 fixed top-0 z-sticky">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-[#fabd04] text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
-          <h1 className="text-2xl font-serif font-bold text-[#fabd04]">{t('join.localMode')}</h1>
+          <span className="material-symbols-outlined text-gold text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>skull</span>
+          <h1 className="text-2xl font-display font-bold text-gold">{t('join.localMode')}</h1>
         </div>
         <div className="flex items-center gap-3">
           <SideMenu isLocalMode={true} onLeave={() => setShowLeaveConfirm(true)} onOpenPrivacy={onOpenPrivacy} />

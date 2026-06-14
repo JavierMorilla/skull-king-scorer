@@ -6,6 +6,7 @@ import { computeScores } from '../services/gameService';
 import Results from './Results';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { track } from '@vercel/analytics';
+import { useToast } from './Toast';
 
 interface LocalResultsProps {
   players: Player[];
@@ -17,6 +18,7 @@ interface LocalResultsProps {
 
 export default function LocalResults({ players, currentRound, bids, settings, onComplete }: LocalResultsProps) {
   const { t } = useLanguage();
+  const { showToast } = useToast();
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [step, setStep] = useState<'PASS_PHONE' | 'RESULTS'>('PASS_PHONE');
   const [results, setResults] = useState<Result[]>([]);
@@ -81,7 +83,7 @@ export default function LocalResults({ players, currentRound, bids, settings, on
         track('local_round_completed', { round: currentRound, playersCount: players.length });
         onComplete(finalResults, updatedPlayers);
       } catch (error: any) {
-        alert("🚨 " + t('res.errorCalc') + "\n\n" + error.message);
+        showToast(`${t('res.errorCalc')}: ${error.message}`, 'error');
         setResults([]);
         setCurrentPlayerIndex(0);
         setStep('PASS_PHONE');
@@ -111,20 +113,21 @@ export default function LocalResults({ players, currentRound, bids, settings, on
     return (
       <div className="flex-grow flex flex-col items-center justify-center p-6 text-center h-[calc(100vh-200px)]">
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-[#1b2b3b] p-8 rounded-3xl border border-[#fabd04]/30 shadow-2xl max-w-sm w-full mx-auto"
+          transition={{ type: 'spring', bounce: 0.15, duration: 0.3 }}
+          className="bg-cabin-slate p-8 rounded-3xl border border-gold/30 shadow-2xl max-w-sm w-full mx-auto"
         >
-          <span className="material-symbols-outlined text-6xl text-[#fabd04] mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>waving_hand</span>
-          <h2 className="text-2xl font-serif font-bold text-[#d3e4fa] mb-2">{t('local.passPhone')}</h2>
-          <p className="text-3xl font-serif font-bold text-[#fabd04] mb-8">{currentPlayer.name}</p>
+          <span className="material-symbols-outlined text-6xl text-gold mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>waving_hand</span>
+          <h2 className="text-2xl font-display font-bold text-ice mb-2">{t('local.passPhone')}</h2>
+          <p className="text-3xl font-display font-bold text-gold mb-8">{currentPlayer.name}</p>
           
           <button
             onClick={() => {
               Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
               setStep('RESULTS');
             }}
-            className="w-full h-16 rounded-xl bg-gradient-to-r from-[#fabd04] to-[#b68900] text-[#261a00] font-serif text-2xl font-bold shadow-2xl shadow-[#fabd04]/20 hover:scale-[0.98] transition-transform flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-transform flex items-center justify-center gap-3"
           >
             {t('local.iAm')} {currentPlayer.name}
           </button>
