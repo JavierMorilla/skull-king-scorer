@@ -31,21 +31,23 @@ interface ResultsProps {
   onDeleteResult?: () => Promise<void>;
 }
 
-const Switch = memo(({ checked, onChange, colorClass = "bg-gold", ariaLabel }: { checked: boolean, onChange: (c: boolean) => void, colorClass?: string, ariaLabel?: string }) => (
+const Switch = memo(({ checked, onChange, colorClass = "bg-gold", ariaLabel, disabled = false }: { checked: boolean, onChange: (c: boolean) => void, colorClass?: string, ariaLabel?: string, disabled?: boolean }) => (
   <button
     type="button"
     role="switch"
     aria-checked={checked}
     aria-label={ariaLabel}
+    disabled={disabled}
     onClick={(e) => { e.preventDefault(); onChange(!checked); }}
-    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-abyssal-deep ${checked ? colorClass : 'bg-cabin-slate'}`}
+    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 border border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 ${checked ? colorClass : 'bg-dark-void'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
   >
     <span
       aria-hidden="true"
-      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-5' : 'translate-x-0'}`}
+      className={`pointer-events-none inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-5' : 'translate-x-0'}`}
     />
   </button>
 ));
+
 const NumericalBonus = memo(({ 
   label, 
   subLabel, 
@@ -82,16 +84,16 @@ const NumericalBonus = memo(({
         onClick={onDecrease} 
         aria-label={`${t('common.reduce')} ${label}`}
         disabled={value <= 0}
-        className="w-11 h-11 rounded-full bg-cabin-slate flex items-center justify-center text-gold hover:bg-cabin-slate/80 transition-colors disabled:opacity-30"
+        className="w-11 h-11 rounded-full bg-cabin-slate flex items-center justify-center text-gold hover:bg-cabin-slate/85 hover:border-gold/30 active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 transition-all border border-transparent disabled:opacity-30 disabled:pointer-events-none"
       >
         <span className="material-symbols-outlined text-base">remove</span>
       </button>
-      <span className="font-mono text-lg font-bold text-white w-4 text-center">{value}</span>
+      <span className="font-mono text-lg font-bold text-white w-6 text-center tabular-nums">{value}</span>
       <button 
         onClick={onIncrease} 
         aria-label={`${t('common.increase')} ${label}`}
         disabled={value >= max}
-        className="w-11 h-11 rounded-full bg-cabin-slate flex items-center justify-center text-gold hover:bg-cabin-slate/80 transition-colors disabled:opacity-30"
+        className="w-11 h-11 rounded-full bg-cabin-slate flex items-center justify-center text-gold hover:bg-cabin-slate/85 hover:border-gold/30 active:scale-[0.95] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 transition-all border border-transparent disabled:opacity-30 disabled:pointer-events-none"
       >
         <span className="material-symbols-outlined text-base">add</span>
       </button>
@@ -285,7 +287,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
           </div>
         </div>
 
-        <div className="mb-10 bg-dark-void rounded-lg p-5 relative z-10">
+        <div className="mb-10 bg-dark-void rounded-2xl p-5 border border-slate-mist/5 relative z-10">
           <label className="font-mono text-sm text-slate-mist uppercase tracking-widest block mb-4 text-center">{t('res.tricksWon')}</label>
           <div className="flex items-center justify-between gap-4">
             <button 
@@ -302,7 +304,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
                 }
               }}
               aria-label={`${t('res.tricksWon')} ${t('common.minusOne')}`}
-              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-150 ${tricks <= 0 ? 'bg-cabin-slate text-slate-mist/30 cursor-not-allowed' : 'bg-cabin-slate text-gold hover:bg-gold hover:text-abyssal-deep active:scale-[0.97]'}`}
+              className={`w-14 h-14 rounded-full flex items-center justify-center border border-transparent transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 ${tricks <= 0 ? 'bg-cabin-slate/30 text-slate-mist/20 cursor-not-allowed' : 'bg-cabin-slate text-gold hover:bg-gold hover:text-abyssal-deep active:scale-[0.95]'}`}
               disabled={tricks <= 0}
             >
               <span className="material-symbols-outlined text-3xl">remove</span>
@@ -313,7 +315,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
                 initial={{ scale: 0.8, opacity: 0.5 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                className="inline-block font-mono text-6xl font-extrabold text-white"
+                className="inline-block font-mono text-6xl font-extrabold text-white tabular-nums"
               >
                 {tricks}
               </motion.span>
@@ -324,7 +326,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
                 setTricks(Math.min(room.currentRound, tricks + 1));
               }}
               aria-label={`${t('res.tricksWon')} ${t('common.plusOne')}`}
-              className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-150 ${tricks >= room.currentRound ? 'bg-cabin-slate text-slate-mist/30 cursor-not-allowed' : 'bg-cabin-slate text-gold hover:bg-gold hover:text-abyssal-deep active:scale-[0.97]'}`}
+              className={`w-14 h-14 rounded-full flex items-center justify-center border border-transparent transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 ${tricks >= room.currentRound ? 'bg-cabin-slate/30 text-slate-mist/20 cursor-not-allowed' : 'bg-cabin-slate text-gold hover:bg-gold hover:text-abyssal-deep active:scale-[0.95]'}`}
               disabled={tricks >= room.currentRound}
             >
               <span className="material-symbols-outlined text-3xl">add</span>
@@ -333,7 +335,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
         </div>
 
         {room.settings?.krakenEnabled && (
-          <div className="mb-6 bg-dark-void p-4 rounded-xl border border-coral/20 relative z-10 space-y-4">
+          <div className="mb-6 bg-dark-void p-4 rounded-2xl border border-coral/15 hover:border-coral/30 transition-colors relative z-10 space-y-4">
             <label className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
                 <span className="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">🦑</span>
@@ -356,7 +358,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
         )}
 
         {room.settings?.whiteWhaleEnabled && (
-          <div className="mb-6 bg-dark-void p-4 rounded-xl border border-ice/20 relative z-10 space-y-4">
+          <div className="mb-6 bg-dark-void p-4 rounded-2xl border border-ice/15 hover:border-ice/30 transition-colors relative z-10 space-y-4">
             <div className="flex items-center justify-between cursor-pointer group">
               <div className="flex items-center gap-3">
                 <span className="text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform">🐋</span>
@@ -407,7 +409,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
         )}
 
         {room.settings?.lootEnabled && (
-          <div className="mb-6 bg-dark-void p-4 rounded-xl border border-gold/20 relative z-10">
+          <div className="mb-6 bg-dark-void p-4 rounded-2xl border border-gold/15 hover:border-gold/30 transition-colors relative z-10">
             <div className="flex items-center gap-3 mb-3">
               <span className="material-symbols-outlined text-gold text-2xl">handshake</span>
               <div className="text-left">
@@ -418,11 +420,11 @@ export default function Results({ room, players, bids, results, currentPlayerId,
             <select
               value={lootAlliance || ''}
               onChange={(e) => setLootAlliance(e.target.value || null)}
-              className="w-full bg-cabin-slate border border-gold/30 rounded-lg p-3 min-h-11 text-ice font-sans focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-abyssal-deep transition-all"
+              className="w-full bg-dark-void border border-slate-mist/20 focus:border-gold focus:ring-2 focus:ring-gold/30 rounded-xl p-3 min-h-11 text-ice font-sans focus:outline-none transition-all cursor-pointer hover:border-gold/30"
             >
-              <option value="">{t('res.lootNone')}</option>
+              <option value="" className="bg-cabin-slate">{t('res.lootNone')}</option>
               {players.filter(p => p.id !== currentPlayer?.id).map(p => (
-                <option key={p.id} value={p.id}>{p.name}</option>
+                <option key={p.id} value={p.id} className="bg-cabin-slate">{p.name}</option>
               ))}
             </select>
           </div>
@@ -431,7 +433,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
         {tricks > 0 && (
           <>
             {room.settings?.characterBonusesEnabled && (
-              <div className="mb-4 bg-dark-void p-4 rounded-xl border border-gold/20 relative z-10">
+              <div className="mb-4 bg-dark-void p-4 rounded-2xl border border-gold/15 hover:border-gold/30 transition-colors relative z-10">
                 <p className="font-mono text-xs uppercase tracking-widest text-apricot mb-4">{t('res.capTitle')}</p>
                 <div className="space-y-4">
                   <label className="flex items-center justify-between cursor-pointer group">
@@ -480,7 +482,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
             )}
 
             {room.settings?.fourteenBonusesEnabled && (
-              <div className="mb-4 bg-dark-void p-4 rounded-xl border border-apricot/20 relative z-10 space-y-4">
+              <div className="mb-4 bg-dark-void p-4 rounded-2xl border border-apricot/15 hover:border-apricot/30 transition-colors relative z-10 space-y-4">
                 <p className="font-mono text-xs uppercase tracking-widest text-apricot mb-4">{t('res.14Title')}</p>
                 
                 <NumericalBonus 
@@ -525,7 +527,7 @@ export default function Results({ room, players, bids, results, currentPlayerId,
       <button 
         onClick={handleConfirmResult}
         disabled={loading}
-        className="w-full bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display font-bold text-xl py-5 rounded-xl shadow-lg shadow-gold/20 active:scale-[0.97] duration-150 transition-transform disabled:opacity-50 min-h-11"
+        className="w-full h-16 bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-sans font-bold text-xl rounded-xl shadow-xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-2 disabled:opacity-50 duration-150"
       >
         {t('res.confirm')}
       </button>

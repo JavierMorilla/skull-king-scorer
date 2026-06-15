@@ -101,15 +101,15 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
         <section className="grid grid-cols-12 gap-3 mb-8">
         {/* 1st Place */}
         {sortedPlayers[0] && (
-          <div className="col-span-12 bg-gradient-to-br from-gold/20 to-cabin-slate rounded-xl p-6 relative overflow-hidden shadow-2xl">
+          <div className="col-span-12 bg-gradient-to-br from-gold/15 to-cabin-slate rounded-2xl p-6 relative overflow-hidden border border-gold/20 shadow-2xl">
             <div className="absolute -right-4 -top-4 opacity-10 rotate-12">
-              <span className="material-symbols-outlined text-9xl">workspace_premium</span>
+              <span className="material-symbols-outlined text-9xl text-gold">workspace_premium</span>
             </div>
             <div className="flex items-end justify-between relative z-10">
               <div className="flex items-center gap-4">
                 <div>
-                  <span className="font-display text-gold text-4xl block italic leading-none">1st</span>
-                  <h2 className="font-display text-2xl text-ice font-bold">{sortedPlayers[0].name}</h2>
+                  <span className="font-mono text-gold text-4xl block italic leading-none font-bold">1st</span>
+                  <h2 className="font-sans text-2xl text-ice font-bold">{sortedPlayers[0].name}</h2>
                 </div>
               </div>
               <div className="text-right">
@@ -141,10 +141,10 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
 
         {/* 2nd Place */}
         {sortedPlayers[1] && (
-          <div className="col-span-6 bg-cabin-slate rounded-xl p-4 relative overflow-hidden">
+          <div className="col-span-6 bg-gradient-to-br from-ice/15 to-cabin-slate rounded-2xl p-4 border border-ice/20 relative overflow-hidden shadow-lg">
             <div className="flex flex-col items-center text-center">
-              <span className="font-display text-slate-300 text-2xl italic">2nd</span>
-              <h3 className="font-display text-lg text-ice leading-tight">{sortedPlayers[1].name}</h3>
+              <span className="font-mono text-ice/80 text-2xl italic font-bold">2nd</span>
+              <h3 className="font-sans text-lg text-ice font-bold leading-tight">{sortedPlayers[1].name}</h3>
               <div className="mt-2">
                 <motion.p 
                   key={sortedPlayers[1].score}
@@ -170,10 +170,10 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
 
         {/* 3rd Place */}
         {sortedPlayers[2] && (
-          <div className="col-span-6 bg-cabin-slate rounded-xl p-4 relative overflow-hidden">
+          <div className="col-span-6 bg-gradient-to-br from-apricot/15 to-cabin-slate rounded-2xl p-4 border border-apricot/20 relative overflow-hidden shadow-lg">
             <div className="flex flex-col items-center text-center">
-              <span className="font-display text-amber-600 text-2xl italic">3rd</span>
-              <h3 className="font-display text-lg text-ice leading-tight">{sortedPlayers[2].name}</h3>
+              <span className="font-mono text-apricot/80 text-2xl italic font-bold">3rd</span>
+              <h3 className="font-sans text-lg text-ice font-bold leading-tight">{sortedPlayers[2].name}</h3>
               <div className="mt-2">
                 <motion.p 
                   key={sortedPlayers[2].score}
@@ -199,7 +199,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
       </section>
 
       <div className="space-y-3">
-        <h4 className="font-display text-xl text-apricot ml-2 mb-4 italic">{t('lead.fleet')}</h4>
+        <h4 className="font-sans text-xl font-bold text-apricot ml-2 mb-4 italic">{t('lead.fleet')}</h4>
         
         {sortedPlayers.slice(3).map((player, index) => {
           const result = results.find(r => r.playerId === player.id);
@@ -210,12 +210,12 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + (index * 0.1) }}
-              className="bg-dark-void rounded-xl p-4 flex items-center justify-between group hover:bg-cabin-slate transition-colors"
+              className="bg-cabin-slate/50 rounded-2xl p-4 border border-slate-mist/5 flex items-center justify-between group hover:bg-cabin-slate transition-all active:scale-[0.99] duration-100"
             >
               <div className="flex items-center gap-4">
                 <span className="font-mono text-slate-mist w-6 text-center tabular-nums">{index + 4}</span>
                 <div>
-                  <p className="font-sans font-semibold text-ice">{player.name}</p>
+                  <p className="font-sans font-bold text-ice">{player.name}</p>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-slate-mist uppercase tracking-widest">{t('lead.last')}</span>
                     <span className={`text-[10px] font-mono font-bold tabular-nums ${result?.scoreChange > 0 ? 'text-gold' : result?.scoreChange < 0 ? 'text-coral' : 'text-slate-mist'}`}>
@@ -249,7 +249,7 @@ export default function Leaderboard({ room, players, results }: LeaderboardProps
           <button 
             onClick={handleNextRound}
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep py-4 min-h-11 rounded-xl font-display font-bold text-lg shadow-xl active:scale-[0.97] transition-transform disabled:opacity-50"
+            className="w-full h-16 bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep rounded-xl font-sans font-bold text-xl shadow-xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isSubmitting ? t('lead.preparing') : (room.currentRound < 10 ? t('lead.next') : t('lead.finish'))}
           </button>

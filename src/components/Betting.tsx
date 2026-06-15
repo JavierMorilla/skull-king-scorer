@@ -23,13 +23,13 @@ const PlayerBidRow = memo(({ player, bid }: { player: Player, bid?: Bid }) => (
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     key={player.id}
-    className="flex items-center justify-between p-4 rounded-xl w-full max-w-xs mx-auto border shadow-lg bg-cabin-slate border-gold/30"
+    className="flex items-center justify-between p-3.5 rounded-xl w-full max-w-xs mx-auto border border-slate-mist/10 bg-cabin-slate shadow-md"
   >
     <span className="font-sans font-bold text-lg text-ice">
       {player.name}
     </span>
-    <div className="w-12 h-12 rounded-full flex items-center justify-center border bg-abyssal-deep border-gold/50">
-      <span className="font-mono text-2xl font-bold text-gold tabular-nums">
+    <div className="w-11 h-11 rounded-full flex items-center justify-center bg-dark-void border border-gold/35 shadow-inner">
+      <span className="font-mono text-xl font-bold text-gold tabular-nums">
         {bid?.bid}
       </span>
     </div>
@@ -37,12 +37,12 @@ const PlayerBidRow = memo(({ player, bid }: { player: Player, bid?: Bid }) => (
 ));
 
 const WaitingPlayerRow = memo(({ player, hasBid }: { player: Player, hasBid: boolean }) => (
-  <div key={player.id} className="flex items-center justify-between bg-cabin-slate p-3 rounded-lg w-full max-w-xs mx-auto">
-    <span className="font-sans text-ice">{player.name}</span>
+  <div key={player.id} className="flex items-center justify-between bg-cabin-slate p-3 rounded-xl w-full max-w-xs mx-auto border border-slate-mist/5 shadow-sm">
+    <span className="font-sans font-medium text-ice">{player.name}</span>
     {hasBid ? (
-      <span className="material-symbols-outlined text-gold text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+      <span className="material-symbols-outlined text-gold text-xl animate-in zoom-in-50 duration-200" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
     ) : (
-      <span className="material-symbols-outlined text-slate-mist/50 text-xl">pending</span>
+      <span className="material-symbols-outlined text-slate-mist/40 text-xl animate-pulse">pending</span>
     )}
   </div>
 ));
@@ -53,17 +53,17 @@ const BidButton = memo(({ num, selected, onClick }: { num: number, selected: boo
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
     animate={selected ? {
-      scale: [1, 1.15, 1.05],
-      rotate: [0, -5, 5, 0],
-      transition: { duration: 0.3 }
+      scale: [1, 1.12, 1.05],
+      rotate: [0, -3, 3, 0],
+      transition: { duration: 0.25 }
     } : { scale: 1, rotate: 0 }}
     aria-label={`Apostar ${num} bazas`}
-    className={`aspect-square min-h-11 rounded-xl flex flex-col items-center justify-center border-2 transition-colors duration-200 group ${selected
-        ? 'bg-gold/15 border-gold shadow-[0_0_20px_rgba(250,189,4,0.3)]'
-        : 'bg-dark-void border-transparent hover:bg-cabin-slate'
+    className={`aspect-square min-h-11 rounded-xl flex flex-col items-center justify-center border transition-all duration-200 group ${selected
+        ? 'bg-gold/10 border-gold shadow-[0_0_15px_rgba(250,189,4,0.15)]'
+        : 'bg-dark-void border-slate-mist/10 hover:border-gold/30 hover:bg-cabin-slate'
       }`}
   >
-    <span className={`font-mono text-2xl transition-colors tabular-nums ${selected ? 'text-gold font-bold text-glow' : 'text-ice group-hover:text-gold'}`}>
+    <span className={`font-mono text-2xl transition-colors tabular-nums ${selected ? 'text-gold font-bold' : 'text-ice group-hover:text-gold'}`}>
       {num}
     </span>
   </motion.button>
@@ -104,7 +104,7 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
       setIsAnimatingConfirm(false);
       setSelectedBid(null);
       setExtraBet(0);
-    }, 800);
+    }, 600); // Tighter feedback window (600ms)
   }, [selectedBid, extraBet, onSubmitBid, room.id, room.currentRound, t]);
 
   const handleNextPhase = useCallback(async () => {
@@ -153,28 +153,29 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
           className="flex-grow pt-24 pb-32 px-6 max-w-lg mx-auto w-full flex flex-col items-center justify-center text-center"
         >
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="mb-4"
+            initial={{ scale: 0, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', damping: 12, stiffness: 150 }}
+            className="mb-4 w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center"
           >
-            <span className="material-symbols-outlined text-gold text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
+            <span className="material-symbols-outlined text-gold text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
           </motion.div>
           <h2 className="font-display text-3xl font-bold text-ice mb-2">{t('bet.revealedTitle')}</h2>
-          <p className="text-apricot/80 font-sans mb-6">{t('bet.revealedSub')}</p>
+          <p className="text-apricot/80 font-sans mb-6 text-sm">{t('bet.revealedSub')}</p>
 
           {dealer && startingPlayer && (
-            <div className="bg-cabin-slate border border-gold/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
+            <div className="bg-cabin-slate border border-slate-mist/10 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-apricot/80 text-xl">menu_book</span>
                 <span className="font-sans text-ice text-sm">
-                  {t('bet.dealer')}: <strong className="text-apricot">{dealer.name}</strong>
+                  {t('bet.dealer')}: <strong className="text-apricot font-bold">{dealer.name}</strong>
                 </span>
               </div>
-              <div className="hidden sm:block w-px h-4 bg-cabin-slate"></div>
+              <div className="hidden sm:block w-px h-4 bg-slate-mist/10"></div>
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-gold text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
                 <span className="font-sans text-ice text-sm">
-                  {t('bet.starts')}: <strong className="text-gold">{startingPlayer.name}</strong>
+                  {t('bet.starts')}: <strong className="text-gold font-bold">{startingPlayer.name}</strong>
                 </span>
               </div>
             </div>
@@ -194,7 +195,7 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               onClick={handleNextPhase}
-              className="mt-10 w-full max-w-xs bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep py-4 min-h-11 rounded-xl font-display font-bold text-lg shadow-xl active:scale-[0.97] transition-transform"
+              className="mt-10 w-full max-w-xs bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep py-4 min-h-11 rounded-xl font-sans font-bold text-lg shadow-xl active:scale-[0.97] transition-all"
             >
               {t('bet.btnStartRound')}
             </motion.button>
@@ -216,32 +217,32 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="mb-4"
+          className="mb-4 w-16 h-16 rounded-full bg-gold/5 flex items-center justify-center border border-gold/10"
         >
-          <span className="material-symbols-outlined text-gold text-6xl">hourglass_empty</span>
+          <span className="material-symbols-outlined text-gold text-3xl">hourglass_empty</span>
         </motion.div>
         <h2 className="font-display text-3xl font-bold text-ice mb-2">{t('bet.registeredTitle')}</h2>
-        <p className="text-apricot/80 font-sans mb-6">{t('bet.registeredSub')}</p>
+        <p className="text-apricot/80 font-sans mb-6 text-sm">{t('bet.registeredSub')}</p>
 
         {dealer && startingPlayer && (
-          <div className="bg-cabin-slate border border-gold/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
+          <div className="bg-cabin-slate border border-slate-mist/10 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-apricot/80 text-xl">menu_book</span>
               <span className="font-sans text-ice text-sm">
-                {t('bet.dealer')}: <strong className="text-apricot">{dealer.name}</strong>
+                {t('bet.dealer')}: <strong className="text-apricot font-bold">{dealer.name}</strong>
               </span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-cabin-slate"></div>
+            <div className="hidden sm:block w-px h-4 bg-slate-mist/10"></div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-gold text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
               <span className="font-sans text-ice text-sm">
-                {t('bet.starts')}: <strong className="text-gold">{startingPlayer.name}</strong>
+                {t('bet.starts')}: <strong className="text-gold font-bold">{startingPlayer.name}</strong>
               </span>
             </div>
           </div>
         )}
 
-        <div className="mt-2 space-y-2 w-full">
+        <div className="mt-2 space-y-2.5 w-full">
           {players.map(p => (
             <WaitingPlayerRow
               key={p.id}
@@ -269,18 +270,18 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
       className="flex-grow mt-20 mb-28 px-6 max-w-lg mx-auto w-full"
     >
       {dealer && startingPlayer && (
-          <div className="bg-cabin-slate border border-gold/30 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
+          <div className="bg-cabin-slate border border-slate-mist/10 rounded-xl p-3 mb-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 shadow-lg w-full">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-apricot/80 text-xl">menu_book</span>
               <span className="font-sans text-ice text-sm">
-                {t('bet.dealer')}: <strong className="text-apricot">{dealer.name}</strong>
+                {t('bet.dealer')}: <strong className="text-apricot font-bold">{dealer.name}</strong>
               </span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-cabin-slate"></div>
+            <div className="hidden sm:block w-px h-4 bg-slate-mist/10"></div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-gold text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_circle</span>
               <span className="font-sans text-ice text-sm">
-                {t('bet.starts')}: <strong className="text-gold">{startingPlayer.name}</strong>
+                {t('bet.starts')}: <strong className="text-gold font-bold">{startingPlayer.name}</strong>
               </span>
             </div>
           </div>
@@ -295,12 +296,12 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-4 rounded-full"></div>
       </section>
 
-      <div className="bg-cabin-slate rounded-xl p-6 mb-8 relative overflow-hidden shadow-2xl">
+      <div className="bg-cabin-slate rounded-xl p-5 border border-slate-mist/10 mb-8 relative overflow-hidden shadow-lg">
         <div className="absolute top-0 right-0 p-4 opacity-10">
           <span className="material-symbols-outlined text-5xl">person</span>
         </div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-slate-mist mb-2">{t('bet.currentPlayer')}</p>
-        <h3 className="font-display text-2xl font-bold text-gold italic">{currentPlayer?.name}</h3>
+        <h3 className="font-sans text-2xl font-bold text-gold italic">{currentPlayer?.name}</h3>
       </div>
 
       <div className="space-y-4">
@@ -321,13 +322,13 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mt-6 bg-cabin-slate p-4 rounded-xl border border-gold/30"
+          className="mt-6 bg-cabin-slate p-4 rounded-xl border border-slate-mist/10 shadow-md"
         >
           <div className="flex items-center gap-3 mb-3">
             <span className="material-symbols-outlined text-gold text-2xl">casino</span>
             <div className="text-left">
-              <span className="font-sans font-bold text-ice block">{t('rules.extraBet')}</span>
-              <span className="font-mono text-[10px] text-slate-mist uppercase tracking-wider">{t('rules.extraBetDesc')}</span>
+              <span className="font-sans font-bold text-ice block text-sm">{t('rules.extraBet')}</span>
+              <span className="font-mono text-[9px] text-slate-mist uppercase tracking-widest leading-none mt-0.5 block">{t('rules.extraBetDesc')}</span>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -355,21 +356,21 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
           onClick={handleConfirmBid}
           disabled={selectedBid === null || loading}
           aria-label={t('bet.confirm')}
-          className="w-full bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep py-5 min-h-11 rounded-xl flex items-center justify-center gap-3 active:scale-[0.96] transition-transform shadow-xl disabled:opacity-50"
+          className="w-full bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep py-5 min-h-11 rounded-xl flex items-center justify-center gap-3 active:scale-[0.96] transition-all shadow-xl disabled:opacity-50"
         >
-          <span className="font-mono text-abyssal-deep font-bold text-lg uppercase tracking-widest">{t('bet.confirm')}</span>
+          <span className="font-sans text-abyssal-deep font-bold text-lg uppercase tracking-widest">{t('bet.confirm')}</span>
           <span className="material-symbols-outlined text-abyssal-deep text-2xl">check_circle</span>
         </button>
       </div>
 
       <div className="mt-10 grid grid-cols-2 gap-4">
-        <div className="bg-dark-void p-4 rounded-xl">
+        <div className="bg-dark-void border border-slate-mist/10 p-4 rounded-xl">
           <p className="font-mono text-[10px] uppercase text-slate-mist mb-1">{t('bet.possible')}</p>
-          <p className="font-mono text-xl text-gold tabular-nums">+{totalPossibleScore}</p>
+          <p className="font-mono text-xl text-gold font-bold tabular-nums">+{totalPossibleScore}</p>
         </div>
-        <div className="bg-dark-void p-4 rounded-xl">
+        <div className="bg-dark-void border border-slate-mist/10 p-4 rounded-xl">
           <p className="font-mono text-[10px] uppercase text-slate-mist mb-1">{t('bet.penalty')}</p>
-          <p className="font-mono text-xl text-coral tabular-nums">-{totalMaxPenalty}</p>
+          <p className="font-mono text-xl text-coral font-bold tabular-nums">-{totalMaxPenalty}</p>
         </div>
       </div>
 
@@ -378,7 +379,7 @@ export default function Betting({ room, players, bids, currentPlayerId, onSubmit
           <motion.div
             initial={{ opacity: 0, scale: 0.5, y: 50 }}
             animate={{ opacity: [0, 1, 1, 0], scale: [0.5, 1.2, 1, 0.5], y: [50, 0, -50, -250] }}
-            transition={{ duration: 0.8, times: [0, 0.2, 0.6, 1], ease: "easeInOut" }}
+            transition={{ duration: 0.6, times: [0, 0.2, 0.6, 1], ease: "easeInOut" }}
             className="fixed inset-0 pointer-events-none z-modal flex items-center justify-center"
           >
             <div className="bg-gradient-to-br from-gold to-gold-hover text-abyssal-deep w-32 h-32 rounded-full flex items-center justify-center text-6xl font-bold shadow-[0_0_50px_rgba(250,189,4,0.6)] border-4 border-white/20">

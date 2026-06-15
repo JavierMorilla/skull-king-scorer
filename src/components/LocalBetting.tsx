@@ -61,18 +61,19 @@ export default function LocalBetting({ players, currentRound, settings, onComple
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', bounce: 0.15, duration: 0.3 }}
-          className="bg-cabin-slate p-8 rounded-3xl border border-gold/30 shadow-2xl max-w-sm w-full mx-auto"
+          className="bg-cabin-slate p-8 rounded-2xl border border-gold/20 shadow-2xl max-w-sm w-full mx-auto relative overflow-hidden"
         >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
           <span className="material-symbols-outlined text-6xl text-gold mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>waving_hand</span>
-          <h2 className="text-2xl font-display font-bold text-ice mb-2">{t('local.passPhone')}</h2>
-          <p className="text-3xl font-display font-bold text-gold mb-8">{currentPlayer.name}</p>
+          <h2 className="text-2xl font-sans font-bold text-ice mb-2">{t('local.passPhone')}</h2>
+          <p className="text-3xl font-sans font-extrabold text-gold mb-8">{currentPlayer.name}</p>
           
           <button
             onClick={() => {
               Haptics.impact({ style: ImpactStyle.Medium }).catch(() => {});
               setStep('BETTING');
             }}
-            className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-transform flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-sans text-xl font-bold shadow-xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-2"
           >
             {t('local.iAm')} {currentPlayer.name}
           </button>

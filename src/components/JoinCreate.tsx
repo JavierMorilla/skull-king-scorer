@@ -28,12 +28,12 @@ const LocalPlayerInput = memo(({ index, value, onChange, onRemove, canRemove, pl
       maxLength={15}
       onChange={(e) => onChange(index, sanitizeInput(e.target.value))}
       placeholder={placeholder}
-      className="w-full bg-cabin-slate border border-slate-mist/30 h-12 px-4 rounded-xl font-display text-lg text-ice placeholder:text-ice/30 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-abyssal-deep transition-all font-black"
+      className="w-full bg-dark-void border border-slate-mist/20 h-12 px-4 rounded-xl font-sans font-bold text-ice placeholder:text-ice/30 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all"
     />
     {canRemove && (
       <button 
         onClick={() => onRemove(index)} 
-        className="text-coral/70 hover:text-coral p-2 w-11 h-11 flex items-center justify-center rounded-xl"
+        className="text-coral/70 hover:text-coral hover:bg-coral/10 p-2 w-11 h-11 flex items-center justify-center rounded-xl transition-colors active:scale-[0.95]"
         aria-label="Remove player"
       >
         <span className="material-symbols-outlined">close</span>
@@ -202,14 +202,17 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 />
               ))}
               {localPlayers.length < 8 && (
-                <button onClick={addLocalPlayer} className="w-full py-3 mt-2 border-2 border-dashed border-slate-mist/30 rounded-xl text-apricot/60 font-mono text-sm uppercase tracking-widest hover:border-gold/30 hover:text-gold transition-colors flex items-center justify-center gap-2 min-h-11">
+                <button 
+                  onClick={addLocalPlayer} 
+                  className="w-full py-3 mt-2 border border-dashed border-slate-mist/30 rounded-xl text-apricot/60 font-mono text-sm uppercase tracking-widest hover:border-gold/30 hover:text-gold transition-colors flex items-center justify-center gap-2 min-h-11 active:scale-[0.98]"
+                >
                   <span className="material-symbols-outlined">add</span>
                   {t('join.addPlayer')}
                 </button>
               )}
             </div>
 
-            <div className="bg-cabin-slate rounded-2xl p-4 border border-slate-mist/30 text-left">
+            <div className="bg-cabin-slate rounded-2xl p-4 border border-slate-mist/10 text-left shadow-lg">
               <button
                 onClick={() => setShowSettings(!showSettings)}
                 className="w-full flex items-center justify-between group min-h-11"
@@ -228,21 +231,21 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
               {showSettings && (
                 <div className="grid grid-cols-2 gap-3 mt-4">
                   {[
-                    { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-coral', bg: 'bg-coral/10', border: 'border-coral', switchBg: 'bg-coral' },
-                    { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-ice', bg: 'bg-ice/10', border: 'border-ice', switchBg: 'bg-ice' },
-                    { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold', switchBg: 'bg-gold' },
-                    { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-apricot', bg: 'bg-apricot/10', border: 'border-apricot', switchBg: 'bg-apricot' },
-                    { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-slate-mist', bg: 'bg-slate-mist/10', border: 'border-slate-mist', switchBg: 'bg-slate-mist' },
-                    { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold', switchBg: 'bg-gold' },
+                    { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-coral', bg: 'bg-coral/10', border: 'border-coral/40', switchBg: 'bg-coral' },
+                    { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-ice', bg: 'bg-ice/10', border: 'border-ice/40', switchBg: 'bg-ice' },
+                    { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/40', switchBg: 'bg-gold' },
+                    { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-apricot', bg: 'bg-apricot/10', border: 'border-apricot/40', switchBg: 'bg-apricot' },
+                    { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-slate-mist', bg: 'bg-slate-mist/10', border: 'border-slate-mist/40', switchBg: 'bg-slate-mist' },
+                    { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/40', switchBg: 'bg-gold' },
                   ].map((option) => {
                     const isEnabled = settings[option.id as keyof typeof settings];
                     return (
                       <div
                         key={option.id}
                         onClick={() => setSettings(s => ({ ...s, [option.id]: !isEnabled }))}
-                        className={`relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col gap-2 overflow-hidden group ${isEnabled
-                          ? `bg-cabin-slate/90 ${option.border} shadow-[0_0_15px_rgba(0,0,0,0.2)]`
-                          : 'bg-dark-void border-transparent hover:border-slate-mist/50'
+                        className={`relative p-3 rounded-xl border cursor-pointer transition-all duration-200 flex flex-col gap-2 overflow-hidden group ${isEnabled
+                          ? `bg-cabin-slate ${option.border} shadow-md`
+                          : 'bg-dark-void border-transparent hover:border-slate-mist/20'
                           }`}
                       >
                         <div className="flex justify-between items-start">
@@ -251,7 +254,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                             {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon as string}</span>}
                             {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon as string}</span>}
                           </div>
-                          <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-dark-void border border-slate-mist/30'}`}>
+                          <div className={`w-10 h-6 rounded-full flex items-center p-0.5 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-dark-void border border-slate-mist/20'}`}>
                             <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
                           </div>
                         </div>
@@ -269,13 +272,13 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowLocalSetup(false)}
-                className="w-1/3 h-16 rounded-xl bg-cabin-slate text-ice font-display font-bold text-lg shadow-xl hover:bg-cabin-slate/80 transition-colors active:scale-[0.97]"
+                className="w-1/3 h-16 rounded-xl bg-cabin-slate text-ice border border-slate-mist/10 font-sans font-bold text-lg shadow-xl hover:bg-cabin-slate/80 transition-all active:scale-[0.97]"
               >
                 {t('join.back')}
               </button>
               <button
                 onClick={handleStartLocal}
-                className="w-2/3 h-16 bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep rounded-xl font-display font-bold text-xl shadow-xl shadow-gold/20 active:scale-[0.97] transition-transform duration-150 flex items-center justify-center gap-2"
+                className="w-2/3 h-16 bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep rounded-xl font-sans font-bold text-xl shadow-xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-2xl">play_arrow</span>
                 {t('join.startLocal')}
@@ -293,9 +296,14 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
 
       <div className="relative w-full max-w-md flex flex-col items-center gap-12 text-center z-10">
         <section className="flex flex-col items-center">
-          <div className="w-24 h-24 mb-6 bg-cabin-slate rounded-full flex items-center justify-center shadow-xl shadow-black/40 border-2 border-gold/20">
+          <motion.div 
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 150 }}
+            className="w-24 h-24 mb-6 bg-cabin-slate rounded-full flex items-center justify-center shadow-xl shadow-black/40 border border-gold/20"
+          >
             <span className="material-symbols-outlined text-gold" style={{ fontVariationSettings: "'FILL' 1", fontSize: '60px' }}>skull</span>
-          </div>
+          </motion.div>
           <h2 className="text-5xl md:text-6xl font-display font-bold text-ice tracking-tight leading-none mb-2">
             Skull King <span className="block italic text-gold">Scorer</span>
           </h2>
@@ -320,15 +328,14 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                 maxLength={15}
                 onChange={(e) => setNickname(sanitizeInput(e.target.value))}
                 placeholder={t('join.nicknamePlaceholder')}
-                className="w-full bg-apricot border-none h-16 px-6 rounded-xl font-display text-2xl text-abyssal-deep placeholder:text-abyssal-deep/40 focus:outline-none focus:ring-4 focus:ring-gold focus:ring-offset-2 focus:ring-offset-abyssal-deep transition-all"
-                style={{ backgroundImage: 'radial-gradient(var(--color-apricot) 0.5px, transparent 0.5px)', backgroundSize: '10px 10px', boxShadow: 'inset 0 0 40px rgba(0,0,0,0.1)' }}
+                className="w-full bg-dark-void border border-slate-mist/20 h-16 px-6 rounded-xl font-sans font-bold text-2xl text-ice placeholder:text-ice/20 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition-all"
               />
-              <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-abyssal-deep/30 text-2xl">edit</span>
+              <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-ice/30 text-2xl">edit</span>
             </div>
           </div>
 
           <div className="space-y-4">
-            <div className="bg-cabin-slate rounded-xl p-5 text-left border border-gold/20 shadow-xl relative overflow-hidden">
+            <div className="bg-cabin-slate rounded-xl p-5 text-left border border-slate-mist/10 shadow-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
 
               <button
@@ -357,21 +364,21 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                       {[
-                        { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-coral', bg: 'bg-coral/10', border: 'border-coral', switchBg: 'bg-coral' },
-                        { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-ice', bg: 'bg-ice/10', border: 'border-ice', switchBg: 'bg-ice' },
-                        { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold', switchBg: 'bg-gold' },
-                        { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-apricot', bg: 'bg-apricot/10', border: 'border-apricot', switchBg: 'bg-apricot' },
-                        { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-slate-mist', bg: 'bg-slate-mist/10', border: 'border-slate-mist', switchBg: 'bg-slate-mist' },
-                        { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold', switchBg: 'bg-gold' },
+                        { id: 'krakenEnabled', title: t('rules.kraken'), desc: t('rules.krakenDesc'), icon: '🦑', iconType: 'emoji', color: 'text-coral', bg: 'bg-coral/10', border: 'border-coral/40', switchBg: 'bg-coral' },
+                        { id: 'whiteWhaleEnabled', title: t('rules.whale'), desc: t('rules.whaleDesc'), icon: '🐳', iconType: 'emoji', color: 'text-ice', bg: 'bg-ice/10', border: 'border-ice/40', switchBg: 'bg-ice' },
+                        { id: 'characterBonusesEnabled', title: t('rules.captures'), desc: t('rules.capturesDesc'), icon: 'swords', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/40', switchBg: 'bg-gold' },
+                        { id: 'fourteenBonusesEnabled', title: t('rules.14s'), desc: t('rules.14sDesc'), icon: '14', iconType: 'text', color: 'text-apricot', bg: 'bg-apricot/10', border: 'border-apricot/40', switchBg: 'bg-apricot' },
+                        { id: 'extraBetEnabled', title: t('rules.extra'), desc: t('rules.extraDesc'), icon: 'casino', iconType: 'material', color: 'text-slate-mist', bg: 'bg-slate-mist/10', border: 'border-slate-mist/40', switchBg: 'bg-slate-mist' },
+                        { id: 'lootEnabled', title: t('rules.loot'), desc: t('rules.lootDesc'), icon: 'handshake', iconType: 'material', color: 'text-gold', bg: 'bg-gold/10', border: 'border-gold/40', switchBg: 'bg-gold' },
                       ].map((option) => {
                         const isEnabled = settings[option.id as keyof typeof settings];
                         return (
                           <div
                             key={option.id}
                             onClick={() => setSettings({ ...settings, [option.id]: !isEnabled })}
-                            className={`relative p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 flex flex-col gap-2 overflow-hidden group ${isEnabled
-                              ? `bg-cabin-slate/90 ${option.border} shadow-[0_0_15px_rgba(0,0,0,0.2)]`
-                              : 'bg-dark-void border-transparent hover:border-slate-mist/50'
+                            className={`relative p-3 rounded-xl border cursor-pointer transition-all duration-200 flex flex-col gap-2 overflow-hidden group ${isEnabled
+                              ? `bg-cabin-slate ${option.border} shadow-md`
+                              : 'bg-dark-void border-transparent hover:border-slate-mist/20'
                               }`}
                           >
                             <div className="flex justify-between items-start">
@@ -380,7 +387,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
                                 {option.iconType === 'emoji' && <span className={`text-xl leading-none transition-all ${!isEnabled ? 'grayscale opacity-50' : ''}`}>{option.icon as string}</span>}
                                 {option.iconType === 'text' && <span className="font-mono font-bold text-lg leading-none">{option.icon as string}</span>}
                               </div>
-                              <div className={`w-10 h-6 rounded-full flex items-center p-1 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-dark-void border border-slate-mist/30'}`}>
+                              <div className={`w-10 h-6 rounded-full flex items-center p-0.5 transition-colors duration-300 ${isEnabled ? option.switchBg : 'bg-dark-void border border-slate-mist/20'}`}>
                                 <div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 ${isEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
                               </div>
                             </div>
@@ -400,7 +407,7 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
             <button
               onClick={handleCreate}
               disabled={loading}
-              className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-transform duration-150 flex items-center justify-center gap-3 disabled:opacity-50"
+              className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-sans font-bold text-xl shadow-2xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             >
               {loading ? (
                 <div className="w-6 h-6 border-4 border-abyssal-deep/30 border-t-abyssal-deep rounded-full animate-spin"></div>
@@ -413,24 +420,24 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
             </button>
 
             <div className="flex items-center gap-4 py-4">
-              <div className="h-px flex-grow bg-slate-mist opacity-20"></div>
+              <div className="h-px flex-grow bg-slate-mist opacity-10"></div>
               <span className="font-mono text-xs text-apricot/40 uppercase tracking-widest">{t('join.or')}</span>
-              <div className="h-px flex-grow bg-slate-mist opacity-20"></div>
+              <div className="h-px flex-grow bg-slate-mist opacity-10"></div>
             </div>
 
-            <div className="bg-cabin-slate p-1.5 rounded-2xl flex items-center gap-2 shadow-inner focus-within:ring-2 focus-within:ring-gold focus-within:ring-offset-2 focus-within:ring-offset-abyssal-deep transition-all">
+            <div className="bg-cabin-slate p-1.5 rounded-2xl flex items-center gap-2 shadow-inner border border-slate-mist/10 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/30 transition-all">
               <input
                 type="text"
                 value={roomCode}
                 onChange={(e) => setRoomCode(sanitizeInput(e.target.value))}
                 placeholder={t('join.codePlaceholder')}
                 maxLength={4}
-                className="w-full min-w-0 flex-grow bg-transparent border-none font-mono text-lg sm:text-xl tracking-[0.3em] sm:tracking-[0.5em] text-center text-gold placeholder:text-gold/20 focus:ring-0 uppercase [font-variant-numeric:slashed-zero]"
+                className="w-full min-w-0 flex-grow bg-transparent border-none font-mono text-lg sm:text-xl tracking-[0.3em] sm:tracking-[0.5em] text-center text-gold placeholder:text-gold/20 focus:ring-0 focus:outline-none uppercase [font-variant-numeric:slashed-zero]"
               />
               <button
                 onClick={handleJoin}
                 disabled={loading || roomCode.length !== 4}
-                className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl bg-dark-void text-ice font-mono font-bold text-sm uppercase tracking-wider hover:bg-cabin-slate transition-colors active:scale-[0.97] duration-150 disabled:opacity-50 flex items-center justify-center shrink-0"
+                className="h-12 sm:h-14 px-6 sm:px-8 rounded-xl bg-dark-void text-ice font-sans font-bold text-sm uppercase tracking-wider hover:bg-cabin-slate transition-colors active:scale-[0.97] duration-150 disabled:opacity-50 flex items-center justify-center shrink-0"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-ice/30 border-t-ice rounded-full animate-spin"></div>
@@ -441,14 +448,14 @@ export default function JoinCreate({ onJoin }: JoinCreateProps) {
             </div>
 
             <div className="flex items-center gap-4 py-4">
-              <div className="h-px flex-grow bg-slate-mist opacity-20"></div>
+              <div className="h-px flex-grow bg-slate-mist opacity-10"></div>
               <span className="font-mono text-xs text-apricot/40 uppercase tracking-widest">{t('join.or')}</span>
-              <div className="h-px flex-grow bg-slate-mist opacity-20"></div>
+              <div className="h-px flex-grow bg-slate-mist opacity-10"></div>
             </div>
 
             <button
               onClick={() => setShowLocalSetup(true)}
-              className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-transform duration-150 flex items-center justify-center gap-3"
+              className="w-full h-16 rounded-xl bg-cabin-slate border border-slate-mist/10 text-ice font-sans font-bold text-xl shadow-xl hover:bg-cabin-slate/80 active:scale-[0.97] transition-all flex items-center justify-center gap-3"
             >
               <span className="material-symbols-outlined text-3xl">devices</span>
               {t('join.localModeBtn')}

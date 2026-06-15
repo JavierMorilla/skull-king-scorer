@@ -57,7 +57,7 @@ export default function LocalLeaderboard({ players, currentRound, onNextRound, o
         }}
         className="w-full max-w-2xl flex flex-col items-center"
       >
-        <h2 className="text-4xl font-display font-bold text-ice mb-2">
+        <h2 className="text-4xl font-sans font-bold text-ice mb-2">
           {isGameOver ? t('lead.end') : t('lead.fleet')}
         </h2>
         <p className="font-mono text-apricot opacity-60 uppercase tracking-widest text-xs mb-8">
@@ -71,12 +71,17 @@ export default function LocalLeaderboard({ players, currentRound, onNextRound, o
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.04, duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-              className={`relative bg-cabin-slate rounded-xl border ${
-                index === 0 ? 'border-gold shadow-[0_0_15px_rgba(250,189,4,0.2)]' : 'border-slate-mist/10'
-              } p-4 flex items-center justify-between overflow-hidden`}
+              className={`relative rounded-2xl border p-4 flex items-center justify-between overflow-hidden transition-all duration-100 ${
+                index === 0 ? 'bg-gradient-to-br from-gold/15 to-cabin-slate border-gold/20 shadow-[0_0_15px_rgba(250,189,4,0.15)]' :
+                index === 1 ? 'bg-gradient-to-br from-ice/15 to-cabin-slate border-ice/20 shadow-md' :
+                index === 2 ? 'bg-gradient-to-br from-apricot/15 to-cabin-slate border-apricot/20 shadow-md' :
+                'bg-cabin-slate/50 border border-slate-mist/5 hover:bg-cabin-slate active:scale-[0.99]'
+              }`}
             >
-              {index === 0 && (
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+              {(index === 0 || index === 1 || index === 2) && (
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none opacity-20 ${
+                  index === 0 ? 'bg-gold' : index === 1 ? 'bg-ice' : 'bg-apricot'
+                }`}></div>
               )}
               
               <div className="flex items-center gap-4 relative z-10">
@@ -104,7 +109,7 @@ export default function LocalLeaderboard({ players, currentRound, onNextRound, o
         {!isGameOver ? (
           <button
             onClick={onNextRound}
-            className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-display text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-transform flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-xl bg-gradient-to-r from-gold to-gold-hover text-abyssal-deep font-sans text-2xl font-bold shadow-2xl shadow-gold/20 active:scale-[0.97] transition-all flex items-center justify-center gap-2"
           >
             {t('lead.next')}
             <span className="material-symbols-outlined text-3xl">arrow_forward</span>
@@ -112,7 +117,7 @@ export default function LocalLeaderboard({ players, currentRound, onNextRound, o
         ) : (
           <button
             onClick={onLeave}
-            className="w-full h-16 rounded-xl bg-cabin-slate text-ice font-display text-xl font-bold border border-cabin-slate hover:bg-cabin-slate/80 active:scale-[0.97] transition-[background-color,transform] duration-150 flex items-center justify-center gap-3"
+            className="w-full h-16 rounded-xl bg-cabin-slate text-ice font-sans text-xl font-bold border border-slate-mist/10 hover:bg-cabin-slate/85 active:scale-[0.97] transition-all flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined">home</span>
             {t('app.leave')}

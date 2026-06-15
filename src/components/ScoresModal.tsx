@@ -42,10 +42,12 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-cabin-slate rounded-2xl p-6 w-full max-w-md shadow-2xl border border-cabin-slate"
+            className="bg-cabin-slate rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-mist/10 relative overflow-hidden"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-display text-2xl text-ice font-bold">{t('score.title')}</h2>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+            
+            <div className="flex justify-between items-center mb-6 relative z-10">
+              <h2 className="font-sans text-2xl text-ice font-bold">{t('score.title')}</h2>
               <button
                 onClick={onClose}
                 className="text-apricot/60 hover:text-apricot p-2 w-11 h-11 flex items-center justify-center rounded-full hover:bg-abyssal-deep/50 transition-colors"
@@ -55,15 +57,15 @@ export default function ScoresModal({ isOpen, onClose, room, players }: ScoresMo
               </button>
             </div>
 
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar relative z-10">
               {sortedPlayers.map((player, index) => (
                 <div
                   key={player.id}
-                  className="flex items-center justify-between bg-dark-void/50 p-3 rounded-xl border border-cabin-slate/50"
+                  className="flex items-center justify-between bg-dark-void/50 p-3 rounded-2xl border border-slate-mist/5 transition-all hover:bg-dark-void/70 duration-100"
                 >
                   <div className="flex items-center gap-3">
                     <div>
-                      <div className="font-sans text-ice font-medium flex items-center gap-2">
+                      <div className="font-sans text-ice font-bold flex items-center gap-2">
                         {player.name}
                         {player.id === room.hostId && (
                            <span className="material-symbols-outlined text-gold text-base" title={t('lobby.host')}>sailing</span>
